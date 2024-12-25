@@ -20,4 +20,5 @@ public class DostupnostStolova {
 
     private LocalDateTime dateTime;
     private boolean available = true;
+    private Long userId;
 }

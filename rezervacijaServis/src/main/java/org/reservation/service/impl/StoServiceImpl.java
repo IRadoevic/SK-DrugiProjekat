@@ -18,7 +18,7 @@ public class StoServiceImpl implements StoService {
     private final RestoranRepository restoranRepository;
     private final StoMapper stoMapper;
 
-    @Autowired
+
     public StoServiceImpl(StoRepository stoRepository, RestoranRepository restoranRepository, StoMapper stoMapper) {
         this.stoRepository = stoRepository;
         this.restoranRepository = restoranRepository;

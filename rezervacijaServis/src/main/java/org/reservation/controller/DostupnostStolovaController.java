@@ -5,6 +5,7 @@ import org.reservation.domain.DostupnostStolova;
 import org.reservation.domain.Sto;
 import org.reservation.dto.DostupnostDto;
 import org.reservation.dto.FilterDostupnostiDto;
+import org.reservation.dto.RezervacijaDto;
 import org.reservation.dto.UpateDostupnostDto;
 import org.reservation.exception.ForbiddenException;
 import org.reservation.exception.NotFoundException;
@@ -34,19 +35,14 @@ public class DostupnostStolovaController {
     public ResponseEntity<DostupnostStolova> addDostupnost(@RequestHeader("Authorization") String authorization,
                                                            @RequestBody @Valid DostupnostDto dostupnostDto) {
         String token = authorization.split(" ")[1];
-        Claims claims = tokenService.parseToken(token);
+        Integer userId = tokenService.getUserIdFromToken(token);
 
-        if (claims == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        Integer menadzerId = claims.get("id", Integer.class);
-        if (menadzerId == null) {
+        if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         try {
-            DostupnostStolova dostupnost = dostupnostStolovaService.addDostupnost(dostupnostDto, menadzerId);
+            DostupnostStolova dostupnost = dostupnostStolovaService.addDostupnost(dostupnostDto, userId);
             return new ResponseEntity<>(dostupnost, HttpStatus.CREATED);
         } catch (ForbiddenException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -63,19 +59,13 @@ public class DostupnostStolovaController {
                                                               @PathVariable Long id,
                                                               @RequestBody @Valid UpateDostupnostDto updateDostupnostDto) {
         String token = authorization.split(" ")[1];
-        Claims claims = tokenService.parseToken(token);
+        Integer userId = tokenService.getUserIdFromToken(token);
 
-        if (claims == null) {
+        if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
-        Integer menadzerId = claims.get("id", Integer.class);
-        if (menadzerId == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
         try {
-            DostupnostStolova dostupnost = dostupnostStolovaService.updateDostupnost(id, updateDostupnostDto, menadzerId);
+            DostupnostStolova dostupnost = dostupnostStolovaService.updateDostupnost(id, updateDostupnostDto, userId);
             return new ResponseEntity<>(dostupnost, HttpStatus.OK);
         } catch (ForbiddenException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -92,6 +82,60 @@ public class DostupnostStolovaController {
         return new ResponseEntity<>(termini, HttpStatus.OK);
     }
 
+
+    @PostMapping("/makeReservation")
+    public ResponseEntity<String> makeReservation(@RequestBody @Valid RezervacijaDto rezervacijaDto) {
+        try {
+            dostupnostStolovaService.rezervisi(rezervacijaDto);
+            return new ResponseEntity<>("Rezervacija je uspešno izvršena.", HttpStatus.CREATED);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Došlo je do greške pri rezervaciji.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @CheckSecurity(roles = {"klijent"})
+    @PostMapping("/cancelReservation/klijent")
+    public ResponseEntity<String> cancelReservationKlijent(@RequestHeader("Authorization") String authorization,
+                                                           @RequestBody @Valid RezervacijaDto rezervacijaDto) {
+        String token = authorization.split(" ")[1];
+        Integer userId = tokenService.getUserIdFromToken(token);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        try {
+            dostupnostStolovaService.otkazivanjeKlijent(rezervacijaDto);
+            return new ResponseEntity<>("Rezervacija je uspešno otkazana.", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Došlo je do greške prilikom otkazivanja rezervacije.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @CheckSecurity(roles = {"menadzer"})
+    @PostMapping("/cancelReservation/menadzer")
+    public ResponseEntity<String> cancelReservationMenadzer(@RequestHeader("Authorization") String authorization,
+                                                            @RequestBody @Valid RezervacijaDto rezervacijaDto) {
+        String token = authorization.split(" ")[1];
+        Integer userId = tokenService.getUserIdFromToken(token);
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        try {
+            dostupnostStolovaService.otkazivanjeMenadzer(rezervacijaDto);
+            return new ResponseEntity<>("Rezervacija je uspešno otkazana od strane menadžera.", HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Došlo je do greške prilikom otkazivanja rezervacije.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 
 }

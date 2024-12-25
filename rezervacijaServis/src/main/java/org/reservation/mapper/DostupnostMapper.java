@@ -4,6 +4,7 @@ import org.reservation.Repository.StoRepository;
 import org.reservation.domain.DostupnostStolova;
 import org.reservation.domain.Sto;
 import org.reservation.dto.DostupnostDto;
+import org.reservation.dto.RezervacijaDto;
 import org.reservation.exception.NotFoundException;
 
 public class DostupnostMapper {
@@ -24,7 +25,9 @@ public class DostupnostMapper {
         dostupnost.setSto(sto);
         dostupnost.setDateTime(dostupnostDto.getDateTime());
         dostupnost.setAvailable(dostupnostDto.isAvailable());
+        dostupnost.setUserId(null);
         return dostupnost;
     }
+
 
 }

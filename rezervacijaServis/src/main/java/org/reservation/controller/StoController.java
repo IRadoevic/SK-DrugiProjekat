@@ -30,13 +30,8 @@ public class StoController {
     public ResponseEntity<Sto> addSto(@RequestHeader("Authorization") String authorization,
                                       @RequestBody @Valid StoDto stoDto) {
         String token = authorization.split(" ")[1];
-        Claims claims = tokenService.parseToken(token);
+        Integer userId = tokenService.getUserIdFromToken(token);
 
-        if (claims == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        Integer userId = claims.get("id", Integer.class);
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
@@ -58,13 +53,8 @@ public class StoController {
                                          @PathVariable Long id,
                                          @RequestBody @Valid StoDto stoDto) {
         String token = authorization.split(" ")[1];
-        Claims claims = tokenService.parseToken(token);
+        Integer userId = tokenService.getUserIdFromToken(token);
 
-        if (claims == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        Integer userId = claims.get("id", Integer.class);
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

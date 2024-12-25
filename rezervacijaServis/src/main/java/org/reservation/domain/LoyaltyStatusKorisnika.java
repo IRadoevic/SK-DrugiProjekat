@@ -15,7 +15,7 @@ public class LoyaltyStatusKorisnika {
 
     private  Integer userId;
     @ManyToOne
-    private Restoran restoran;
+    private RestoranLoyalty restoranLoyalty;
 
 
 }

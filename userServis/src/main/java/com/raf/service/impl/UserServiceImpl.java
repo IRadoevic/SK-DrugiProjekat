@@ -109,4 +109,23 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user1);});
     }
 
+    @Override
+    public void decrementReservationCount(DecrementReservationCountDto decrementReservationCountDto) {
+        userRepository.findById(decrementReservationCountDto.getUserId())
+                .ifPresent(user1 -> {
+                    user1.setBrojRezervacija(user1.getBrojRezervacija() - 1);
+                    userRepository.save(user1);});
+    }
+
+    public UserBrRezervacijaDto getUserReservationCount(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+        Integer reservationCount = user.getBrojRezervacija();
+
+        UserBrRezervacijaDto userBrRezervacijaDto = new UserBrRezervacijaDto();
+        userBrRezervacijaDto.setId(user.getId());
+        userBrRezervacijaDto.setRezervacija(reservationCount);
+        return userBrRezervacijaDto;
+    }
+
+
 }

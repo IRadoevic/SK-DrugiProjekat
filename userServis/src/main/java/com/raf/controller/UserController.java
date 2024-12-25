@@ -113,6 +113,12 @@ public class UserController {
             return new ResponseEntity<>("No fields were updated.", HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping("/getBrRezervacija/{userId}")
+    public ResponseEntity<UserBrRezervacijaDto> getUserReservationCount(@PathVariable Long userId) {
+        UserBrRezervacijaDto userBrRezervacijaDto = userService.getUserReservationCount(userId);
+        return new ResponseEntity<>(userBrRezervacijaDto, HttpStatus.OK);
+    }
+
 
 
 

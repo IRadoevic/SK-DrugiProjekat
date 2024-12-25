@@ -28,41 +28,22 @@ public class RestoranController {
     public ResponseEntity<RestoranDto> addRestoran(@RequestHeader("Authorization") String authorization,
                                                    @RequestBody RestoranDto restoranDto) {
         String token = authorization.split(" ")[1];
+        Integer userId = tokenService.getUserIdFromToken(token);
+        restoranDto.setManagerId(userId);
 
-        Claims claims = tokenService.parseToken(token);
-
-        if (claims == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-        Integer userId = claims.get("id", Integer.class);
+        RestoranDto createdRestoran = restoranService.addRestoran(restoranDto);
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
-        restoranDto.setManagerId(userId);
-        RestoranDto createdRestoran = restoranService.addRestoran(restoranDto);
-
         return new ResponseEntity<>(createdRestoran, HttpStatus.CREATED);
     }
     @CheckSecurity(roles = {"menadzer"})
     @PutMapping("/editRestoran")
     public ResponseEntity<Void> editRestoran(@RequestHeader("Authorization") String authorization,
                                              @RequestBody @Valid RestoranDto restoranDto) {
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
 
         String token = authorization.split(" ")[1];
-        Claims claims = tokenService.parseToken(token);
-
-        if (claims == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        Integer userId = claims.get("id", Integer.class);
-        if (userId == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+        Integer userId = tokenService.getUserIdFromToken(token);
 
         try {
             restoranService.editRestoran(userId, restoranDto);

@@ -10,4 +10,6 @@ public interface UserService {
     TokenResponseDto login(TokenRequestDto tokenRequestDto);
     boolean updateUser(Long id, UserUpdateDto userUpdateDto);
     void incrementReservationCount(IncrementReservationCountDto incrementReservationCountDto);
+    void decrementReservationCount(DecrementReservationCountDto decrementReservationCountDto );
+    UserBrRezervacijaDto getUserReservationCount(Long userId);
 }
