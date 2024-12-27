@@ -129,6 +129,16 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
                 if(brRezervacija>=pogodnost.getUslov())
                 {
                     loyaltyStatusKorisnikaService.dodajPogodnostKorisniku(rezervacijaDto.getIdKorisnika(),pogodnost);
+                    // saljemo mejl menadzeru
+                    UserDto userDto = getUserById(rezervacijaDto.getIdKorisnika());
+                    PorukaDto porukaDtoPogodnost1 = new PorukaDto();
+                    UserDto manager = getUserById(restoran.getMenagerId().longValue());
+                    porukaDtoPogodnost1.setEmail(manager.getEmail());
+                    porukaDtoPogodnost1.setTipNotifikacije("Klijent je dobio pogodnost");
+                    // %ime  %koji restoran
+                    porukaDtoPogodnost1.setParametri(List.of(pogodnost.getNagrada(), userDto.getUsername()));
+                    jmsTemplate.convertAndSend("send_emails_queue", porukaDtoPogodnost1);
+
                 }
             }
             else if(pogodnost.getNagrada().equals("pice") || pogodnost.getNagrada().equals("dezert"))
@@ -137,6 +147,16 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
                 if((brRezervacija+1)%pogodnost.getUslov()==0)
                 {
                     loyaltyStatusKorisnikaService.dodajPogodnostKorisniku(rezervacijaDto.getIdKorisnika(),pogodnost);
+                    // saljemo mejl menadzeru
+                    UserDto userDto = getUserById(rezervacijaDto.getIdKorisnika());
+                    PorukaDto porukaDtoPogodnost2 = new PorukaDto();
+                    UserDto manager = getUserById(restoran.getMenagerId().longValue());
+                    porukaDtoPogodnost2.setEmail(manager.getEmail());
+                    porukaDtoPogodnost2.setTipNotifikacije("Klijent je dobio pogodnost");
+                    // %ime  %koji restoran
+                    porukaDtoPogodnost2.setParametri(List.of(pogodnost.getNagrada(), userDto.getUsername()));
+                    jmsTemplate.convertAndSend("send_emails_queue", porukaDtoPogodnost2);
+
 
                 }
             }
@@ -147,6 +167,22 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
                 messageHelper.createTextMessage(new IncrementReservationCountDto(rezervacijaDto.getIdKorisnika())));
 
         // obavestimo notification klijenta da je uspesno rezervisao
+        PorukaDto porukaDto = new PorukaDto();
+        UserDto userDto = getUserById(rezervacijaDto.getIdKorisnika());
+        porukaDto.setEmail(userDto.getEmail());
+        porukaDto.setTipNotifikacije("Slanje notifikacije kada je rezervacija uspešno napravljena");
+        // %ime %prezime  %koji restoran
+        porukaDto.setParametri(List.of(userDto.getFirstName(), userDto.getLastName(), restoran.getImeRestorana()));
+        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+
+        // saljemmo i menadzeru da je rezervisao klijent
+        PorukaDto porukaDto2 = new PorukaDto();
+        UserDto manager = getUserById(restoran.getMenagerId().longValue());
+        porukaDto2.setEmail(manager.getEmail());
+        porukaDto2.setTipNotifikacije("Slanje notifikacije kada je rezervacija uspešno napravljena");
+        // %ime  %koji restoran
+        porukaDto2.setParametri(List.of(userDto.getFirstName(), userDto.getLastName(), restoran.getImeRestorana()));
+        jmsTemplate.convertAndSend("send_emails_queue", porukaDto2);
 
     }
 
@@ -164,6 +200,18 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
             throw new RuntimeException("Greška prilikom dohvatanja broja rezervacija.");
         }
     }
+    private UserDto getUserById(Long id) {
+        try {
+            String url = "/user/getUser/" + id;
+            ResponseEntity<UserDto> response = userRestTemplate.exchange(
+                    url, HttpMethod.GET, null, UserDto.class);
+            return response.getBody();
+        } catch (HttpClientErrorException e) {
+            throw new NotFoundException("Korisnik nije pronađen za ID: " + id);
+        } catch (Exception e) {
+            throw new RuntimeException("Greška prilikom dohvatanja korisničkih podataka.");
+        }
+    }
 
     @Override
     public void otkazivanjeKlijent(RezervacijaDto rezervacijaDto) {
@@ -177,6 +225,15 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         jmsTemplate.convertAndSend(decrementReservationCountDestination,
                 messageHelper.createTextMessage(new DecrementReservationCountDto(rezervacijaDto.getIdKorisnika())));
         // obavestavamo menadzera
+        Restoran restoran = dostupnost.getSto().getRestoran();
+        UserDto menadzer = getUserById(restoran.getMenagerId().longValue());
+        PorukaDto porukaDto = new PorukaDto();
+        porukaDto.setEmail(menadzer.getEmail());
+        porukaDto.setTipNotifikacije("Slanje notifikacije za otkazivanje rezervacije");
+        // rezervacija %broj stola u %Restoranu
+        porukaDto.setParametri(List.of(dostupnost.getSto().getId().toString(),restoran.getImeRestorana()));
+        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+
     }
 
     @Override
@@ -184,8 +241,18 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         DostupnostStolova dostupnost = dostupnostRepository
                 .findReservation(rezervacijaDto.getIdStola(), rezervacijaDto.getDateTime(), rezervacijaDto.getIdKorisnika())
                 .orElseThrow(() -> new NotFoundException("Nema dostupnosti za sto u traženo vreme."));
+       Long idUsera = dostupnost.getUserId();
         dostupnost.setAvailable(true);
         dostupnost.setUserId(null);
         // saljemo mejl korisniku
+        Restoran restoran = dostupnost.getSto().getRestoran();
+        UserDto user = getUserById(idUsera);
+        PorukaDto porukaDto = new PorukaDto();
+        porukaDto.setEmail(user.getEmail());
+        porukaDto.setTipNotifikacije("Slanje notifikacije za otkazivanje rezervacije");
+        // %username je otazao rezervacija %broj stola u %Restoranu
+        porukaDto.setParametri(List.of(user.getUsername(),dostupnost.getSto().getId().toString(),restoran.getImeRestorana()));
+        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+
     }
 }

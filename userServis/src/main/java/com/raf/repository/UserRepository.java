@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findById(Long id);
     Optional<User> findUserByUsernameAndPassword(String username, String password);
-    void updateBannedStatus(Long id, Boolean banned);
+
 
 }

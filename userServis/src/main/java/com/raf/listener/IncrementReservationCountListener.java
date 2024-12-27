@@ -3,7 +3,6 @@ package com.raf.listener;
 
 import com.raf.dto.IncrementReservationCountDto;
 import com.raf.service.impl.UserService;
-import com.raf.synCommunication.MessageHelper;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 

@@ -12,4 +12,6 @@ public interface UserService {
     void incrementReservationCount(IncrementReservationCountDto incrementReservationCountDto);
     void decrementReservationCount(DecrementReservationCountDto decrementReservationCountDto );
     UserBrRezervacijaDto getUserReservationCount(Long userId);
+    UserDto vratiUsera(Long id);
+
 }

@@ -16,7 +16,6 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(indexes = {@Index(columnList = "username", unique = true), @Index(columnList = "email", unique = true)})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

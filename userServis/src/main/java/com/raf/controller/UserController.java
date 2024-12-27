@@ -5,14 +5,11 @@ import com.raf.exeption.NotFoundException;
 import com.raf.security.CheckBan;
 import com.raf.security.CheckSecurity;
 import com.raf.service.impl.UserService;
-import com.raf.synCommunication.MessageHelper;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -98,6 +95,17 @@ public class UserController {
         UserBrRezervacijaDto userBrRezervacijaDto = userService.getUserReservationCount(userId);
         return new ResponseEntity<>(userBrRezervacijaDto, HttpStatus.OK);
     }
+    @ApiOperation(value = "Get user by ID")
+    @GetMapping("getUser/{id}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+        try {
+            UserDto userDto = userService.vratiUsera(id);
+            return new ResponseEntity<>(userDto, HttpStatus.OK);
+        } catch (NotFoundException e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 
 
