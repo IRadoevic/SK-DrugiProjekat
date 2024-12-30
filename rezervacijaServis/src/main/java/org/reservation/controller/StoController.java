@@ -1,6 +1,9 @@
 package org.reservation.controller;
 
 import io.jsonwebtoken.Claims;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.reservation.domain.Sto;
 import org.reservation.dto.StoDto;
 import org.reservation.exception.ForbiddenException;
@@ -25,6 +28,17 @@ public class StoController {
         this.stoService = stoService;
         this.tokenService = tokenService;
     }
+
+    @ApiOperation(value = "Get all users")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "What page number you want", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "size", value = "Number of items to return", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+                    value = "Sorting criteria in the format: property(,asc|desc). " +
+                            "Default sort order is ascending. " +
+                            "Multiple sort criteria are supported.")})
+
+
     @CheckSecurity(roles = {"menadzer"})
     @PostMapping("/addSto")
     public ResponseEntity<Sto> addSto(@RequestHeader("Authorization") String authorization,

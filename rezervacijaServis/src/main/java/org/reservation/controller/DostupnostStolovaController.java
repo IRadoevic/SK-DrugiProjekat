@@ -1,6 +1,9 @@
 package org.reservation.controller;
 
 import io.jsonwebtoken.Claims;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.reservation.domain.DostupnostStolova;
 import org.reservation.domain.Sto;
 import org.reservation.dto.DostupnostDto;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/dostupnostStolova")
 public class DostupnostStolovaController {
@@ -30,6 +34,16 @@ public class DostupnostStolovaController {
         this.dostupnostStolovaService = dostupnostStolovaService;
         this.tokenService = tokenService;
     }
+
+    @ApiOperation(value = "Get all users")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "What page number you want", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "size", value = "Number of items to return", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+                    value = "Sorting criteria in the format: property(,asc|desc). " +
+                            "Default sort order is ascending. " +
+                            "Multiple sort criteria are supported.")})
+
     @CheckSecurity(roles = {"menadzer"})
     @PostMapping("/add")
     public ResponseEntity<DostupnostStolova> addDostupnost(@RequestHeader("Authorization") String authorization,

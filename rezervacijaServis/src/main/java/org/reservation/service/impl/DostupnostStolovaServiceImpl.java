@@ -42,7 +42,11 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
     private LoyaltyStatusKorisnika loyaltyStatusKorisnika;
     private LoyaltyStatusKorisnikaService loyaltyStatusKorisnikaService;
 
+    /// nije hteo da se compile bez ovoga. Idk zasto radi ali to su rekli na stackoverflow:
+    /// https://stackoverflow.com/questions/52841620/parameter-0-of-constructor-in-required-a-bean-of-type-java-lang-string-that-co
+    public DostupnostStolovaServiceImpl(){
 
+    }
     public DostupnostStolovaServiceImpl(StoRepository stoRepository, DostupnostStolovaRepository dostupnostRepository, DostupnostMapper dostupnostMapper, RestoranRepository restoranRepository, RestTemplate userRestTemplate, JmsTemplate jmsTemplate, String incrementReservationCountDestination, String decrementReservationCountDestination, MessageHelper messageHelper, Retry userServiceRetry, Bulkhead userServiceBulkhead, RestoranLoyaltyRepository restoranLoyaltyRepository, LoyaltyStatusKorisnika loyaltyStatusKorisnika) {
         this.stoRepository = stoRepository;
         this.dostupnostRepository = dostupnostRepository;
@@ -90,7 +94,7 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         }
 
         if (updateDostupnostDto.getDateTime() != null) {
-            dostupnostStolova.setDateTime(updateDostupnostDto.getDateTime());
+            dostupnostStolova.setDatumVreme(updateDostupnostDto.getDateTime());
         }
         dostupnostStolova.setAvailable(updateDostupnostDto.isAvailable());
 

@@ -1,6 +1,9 @@
 package org.reservation.controller;
 
 import io.jsonwebtoken.Claims;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.reservation.dto.RestoranDto;
 import org.reservation.exception.ForbiddenException;
 import org.reservation.security.CheckSecurity;
@@ -9,6 +12,7 @@ import org.reservation.service.RestoranService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import javax.validation.Valid;
 
@@ -23,7 +27,16 @@ public class RestoranController {
         this.tokenService = tokenService;
     }
 
-    @CheckSecurity(roles = {"menadzer"})
+    @ApiOperation(value = "Get all users")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "What page number you want", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "size", value = "Number of items to return", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
+                    value = "Sorting criteria in the format: property(,asc|desc). " +
+                            "Default sort order is ascending. " +
+                            "Multiple sort criteria are supported.")})
+
+    @CheckSecurity(roles = {"MANAGER"})
     @PostMapping("/add")
     public ResponseEntity<RestoranDto> addRestoran(@RequestHeader("Authorization") String authorization,
                                                    @RequestBody RestoranDto restoranDto) {

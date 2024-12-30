@@ -16,7 +16,7 @@
     </parent>
 
     <properties>
-        <java.version>10</java.version>
+        <java.version>11</java.version>
     </properties>
 
     <dependencies>
@@ -41,15 +41,14 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
         </dependency>
+<!--        obavezno svuda-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-activemq</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version> <!-- Proverite najnoviju verziju na Maven Central -->
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>

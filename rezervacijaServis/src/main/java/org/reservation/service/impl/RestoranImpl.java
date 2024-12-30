@@ -34,8 +34,9 @@ public class RestoranImpl implements RestoranService {
 
     @Override
     public void editRestoran(Integer userId, RestoranDto restoranDto) {
-        if (restoranDto.getId() == null) {
-            throw new IllegalArgumentException("ID restorana ne sme biti null.");
+        //ne moze biti null
+        if (restoranDto.getId() <= 0) {
+            throw new IllegalArgumentException("ID restorana mora biti veći od 0.");
         }
 
         Restoran restoran = restoranRepository.findById(restoranDto.getId())
