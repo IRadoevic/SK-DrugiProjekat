@@ -1,6 +1,8 @@
 package com.raf.service.impl;
 
 import com.raf.dto.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
     UserDto addUser(UserCreateDto userCreateDto);
@@ -14,4 +16,5 @@ public interface UserService {
     UserBrRezervacijaDto getUserReservationCount(Long userId);
     UserDto vratiUsera(Long id);
 
+    //Page<UserDto> findAll(Pageable );
 }

@@ -1,16 +1,25 @@
 package com.raf.dto;
-
+/*
 import lombok.Getter;
-import lombok.Setter;
+import lombok.Setter;*/
 
+/*
 @Getter
-@Setter
+@Setter*/
 public class IncrementReservationCountDto {
 
     public IncrementReservationCountDto() {
     }
 
     public IncrementReservationCountDto(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

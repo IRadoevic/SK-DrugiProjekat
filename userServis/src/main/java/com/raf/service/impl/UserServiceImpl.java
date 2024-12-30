@@ -4,15 +4,19 @@ import com.raf.MessageBroker;
 import com.raf.domain.User;
 import com.raf.dto.*;
 import com.raf.exeption.NotFoundException;
+import com.raf.exeption.UserBannedException;
 import com.raf.mapper.UserMapper;
 import com.raf.repository.UserRepository;
 import com.raf.security.service.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +26,7 @@ public class UserServiceImpl implements UserService {
     private TokenService tokenService;
     private UserRepository userRepository;
     private UserMapper userMapper;
-    private JmsTemplate jmsTemplate; // Dodaj JmsTemplate za slanje poruka
+    //private JmsTemplate jmsTemplate; // Dodaj JmsTemplate za slanje poruka
 
 
     public UserServiceImpl(TokenService tokenService, UserRepository userRepository, UserMapper userMapper) {
@@ -42,7 +46,7 @@ public class UserServiceImpl implements UserService {
         porukaDto.setTipNotifikacije("Slanje aktivacionog imejla");
         // postovani %username aktiviali ste nalog
         porukaDto.setParametri(List.of(user.getUsername()));
-        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+        //jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
 
         return userMapper.userToUserDto(user);
     }
@@ -57,7 +61,7 @@ public class UserServiceImpl implements UserService {
         porukaDto.setTipNotifikacije("Slanje aktivacionog imejla");
         // postovani %username aktiviali ste nalog
         porukaDto.setParametri(List.of(user.getUsername()));
-        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+        //jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
         return userMapper.userToUserDto(user);
     }
     @Transactional
@@ -79,18 +83,28 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException(String
                         .format("User with username: %s and password: %s not found.", tokenRequestDto.getUsername(),
                                 tokenRequestDto.getPassword())));
+        if (user.getBanned()) {
+            throw new UserBannedException("User is banned and can't login");
+        }
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());
         claims.put("role", user.getRole());
+        claims.put("username", user.getUsername());
+        claims.put("password",user.getPassword());
+        claims.put("time", LocalDate.now());
         //Generate token
-        return new TokenResponseDto(tokenService.generate(claims));
+        System.out.println("Before generating token");
+        String token = tokenService.generate(claims);
+        System.out.println("Generated Token: " + token);
+        return new TokenResponseDto(token);
     }
     @Transactional
     public boolean updateUser(Long id, UserUpdateDto userUpdateDto) {
-        // Pronadji korisnika po id
+        System.out.println("uopste usao u fju");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         boolean updated = false;
+        System.out.println("dosao do ovde");
         // Azuriraj samo polja koja nisu null
         if (userUpdateDto.getEmail() != null) {
             user.setEmail(userUpdateDto.getEmail());
@@ -117,11 +131,11 @@ public class UserServiceImpl implements UserService {
             porukaDto.setTipNotifikacije("Slanje aktivacionog imejla");
             // %username promenili ste lozinku sa %stara na % nova
             porukaDto.setParametri(List.of(user.getUsername(), stara,userUpdateDto.getPassword() ));
-            jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+            //jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
             updated = true;
         }
         if (userUpdateDto.getDatumRodjenja() != null) {
-            user.setDatumRodjenja((Date) userUpdateDto.getDatumRodjenja());
+            user.setDatumRodjenja(userUpdateDto.getDatumRodjenja());
             updated = true;
         }
         userRepository.save(user);
@@ -158,6 +172,11 @@ public class UserServiceImpl implements UserService {
     public UserDto vratiUsera(Long id) {
         return userMapper.userToUserDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
     }
+
+    /*@Override
+    public Page<UserDto> findAll(Pageable pageable) {
+        return null;
+    }*/
 
 
 }
