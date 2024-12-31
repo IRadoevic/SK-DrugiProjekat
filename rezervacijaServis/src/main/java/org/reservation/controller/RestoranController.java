@@ -27,15 +27,6 @@ public class RestoranController {
         this.tokenService = tokenService;
     }
 
-    @ApiOperation(value = "Get all users")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "What page number you want", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "size", value = "Number of items to return", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-                    value = "Sorting criteria in the format: property(,asc|desc). " +
-                            "Default sort order is ascending. " +
-                            "Multiple sort criteria are supported.")})
-
     @CheckSecurity(roles = {"MANAGER"})
     @PostMapping("/add")
     public ResponseEntity<RestoranDto> addRestoran(@RequestHeader("Authorization") String authorization,
@@ -46,24 +37,21 @@ public class RestoranController {
         return new ResponseEntity<>(createdRestoran, HttpStatus.CREATED);
     }
 
-    @CheckSecurity(roles = {"menadzer"})
+    @CheckSecurity(roles = {"MANAGER"})
     @PutMapping("/editRestoran")
     public ResponseEntity<Void> editRestoran(@RequestHeader("Authorization") String authorization,
                                              @RequestBody @Valid RestoranDto restoranDto) {
-
         String token = authorization.split(" ")[1];
         Integer userId = tokenService.getUserIdFromToken(token);
-
         try {
             restoranService.editRestoran(userId, restoranDto);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ForbiddenException e) {
+            System.err.println("ForbiddenException occurred: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (Exception e) {
+            System.err.println("Internal Server Error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
 }

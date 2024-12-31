@@ -7,6 +7,15 @@ public class DostupnostDto {
     private Long stoId;
     private LocalDateTime dateTime;
     private boolean available;
+    public int brojOsoba;
+
+    public int getBrojOsoba() {
+        return brojOsoba;
+    }
+
+    public void setBrojOsoba(int brojOsoba) {
+        this.brojOsoba = brojOsoba;
+    }
 
     public Long getStoId() {
         return stoId;

@@ -29,23 +29,14 @@ public class StoController {
         this.tokenService = tokenService;
     }
 
-    @ApiOperation(value = "Get all users")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "What page number you want", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "size", value = "Number of items to return", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-                    value = "Sorting criteria in the format: property(,asc|desc). " +
-                            "Default sort order is ascending. " +
-                            "Multiple sort criteria are supported.")})
-
-
-    @CheckSecurity(roles = {"menadzer"})
+    @CheckSecurity(roles = {"MANAGER"})
     @PostMapping("/addSto")
     public ResponseEntity<Sto> addSto(@RequestHeader("Authorization") String authorization,
                                       @RequestBody @Valid StoDto stoDto) {
         String token = authorization.split(" ")[1];
         Integer userId = tokenService.getUserIdFromToken(token);
 
+        //poprilicno sam sig da nam ovo ne treba ali sto da ne
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
@@ -61,7 +52,7 @@ public class StoController {
         }
     }
 
-    @CheckSecurity(roles = {"menadzer"})
+    @CheckSecurity(roles = {"MANAGER"})
     @PutMapping("/updateSto/{id}")
     public ResponseEntity<Sto> updateSto(@RequestHeader("Authorization") String authorization,
                                          @PathVariable Long id,
@@ -70,20 +61,29 @@ public class StoController {
         Integer userId = tokenService.getUserIdFromToken(token);
 
         if (userId == null) {
+            System.out.println("Unauthorized: User ID could not be extracted from token.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         try {
             Sto sto = stoService.updateSto(id, stoDto, userId);
+            System.out.println("Successfully updated Sto with ID: " + id);
             return new ResponseEntity<>(sto, HttpStatus.OK);
         } catch (ForbiddenException e) {
+            System.out.println("Forbidden: User with ID " + userId + " does not have access to update Sto with ID: " + id);
+            System.out.println("Error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (NotFoundException e) {
+            System.out.println("Not Found: Sto with ID " + id + " does not exist.");
+            System.out.println("Error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            System.out.println("Internal Server Error while updating Sto with ID: " + id);
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
 }

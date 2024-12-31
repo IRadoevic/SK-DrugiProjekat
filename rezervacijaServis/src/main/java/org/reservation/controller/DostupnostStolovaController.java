@@ -35,16 +35,7 @@ public class DostupnostStolovaController {
         this.tokenService = tokenService;
     }
 
-    @ApiOperation(value = "Get all users")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "What page number you want", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "size", value = "Number of items to return", dataType = "string", paramType = "query"),
-            @ApiImplicitParam(name = "sort", allowMultiple = true, dataType = "string", paramType = "query",
-                    value = "Sorting criteria in the format: property(,asc|desc). " +
-                            "Default sort order is ascending. " +
-                            "Multiple sort criteria are supported.")})
-
-    @CheckSecurity(roles = {"menadzer"})
+    @CheckSecurity(roles = {"MANAGER"})
     @PostMapping("/add")
     public ResponseEntity<DostupnostStolova> addDostupnost(@RequestHeader("Authorization") String authorization,
                                                            @RequestBody @Valid DostupnostDto dostupnostDto) {
@@ -52,22 +43,31 @@ public class DostupnostStolovaController {
         Integer userId = tokenService.getUserIdFromToken(token);
 
         if (userId == null) {
+            System.out.println("Unauthorized: User ID could not be extracted from the token.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         try {
             DostupnostStolova dostupnost = dostupnostStolovaService.addDostupnost(dostupnostDto, userId);
+            System.out.println("Successfully added DostupnostStolova. User ID: " + userId);
             return new ResponseEntity<>(dostupnost, HttpStatus.CREATED);
         } catch (ForbiddenException e) {
+            System.out.println("Forbidden: User with ID " + userId + " is not allowed to add DostupnostStolova.");
+            System.out.println("Error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (NotFoundException e) {
+            System.out.println("Not Found: Related entity for DostupnostStolova not found. User ID: " + userId);
+            System.out.println("Error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            System.out.println("Internal Server Error while adding DostupnostStolova. User ID: " + userId);
+            e.printStackTrace(); // Prints the full stack trace for debugging
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @CheckSecurity(roles = {"menadzer"})
+
+    @CheckSecurity(roles = {"MANAGER"})
     @PutMapping("/update/{id}")
     public ResponseEntity<DostupnostStolova> updateDostupnost(@RequestHeader("Authorization") String authorization,
                                                               @PathVariable Long id,
@@ -89,7 +89,7 @@ public class DostupnostStolovaController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @CheckSecurity(roles = {"klijent"})
+    @CheckSecurity(roles = {"USER"})
     @GetMapping("/filter")
     public ResponseEntity<List<DostupnostStolova>> filterTermine(@RequestBody FilterDostupnostiDto filterDto) {
         List<DostupnostStolova> termini = dostupnostStolovaService.findAvailableTerminiByFilters(filterDto);
@@ -109,8 +109,8 @@ public class DostupnostStolovaController {
         }
     }
 
-    @CheckSecurity(roles = {"klijent"})
-    @PostMapping("/cancelReservation/klijent")
+    @CheckSecurity(roles = {"USER"})
+    @PostMapping("/cancelReservation/user")
     public ResponseEntity<String> cancelReservationKlijent(@RequestHeader("Authorization") String authorization,
                                                            @RequestBody @Valid RezervacijaDto rezervacijaDto) {
         String token = authorization.split(" ")[1];
@@ -130,8 +130,8 @@ public class DostupnostStolovaController {
         }
     }
 
-    @CheckSecurity(roles = {"menadzer"})
-    @PostMapping("/cancelReservation/menadzer")
+    @CheckSecurity(roles = {"MANAGER"})
+    @PostMapping("/cancelReservation/manager")
     public ResponseEntity<String> cancelReservationMenadzer(@RequestHeader("Authorization") String authorization,
                                                             @RequestBody @Valid RezervacijaDto rezervacijaDto) {
         String token = authorization.split(" ")[1];

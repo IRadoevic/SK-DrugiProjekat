@@ -4,6 +4,7 @@ public class StoDto {
     private Long restoranId;
     private Integer brojMesta;
     private String zona;
+    private Long id;
 
     public Long getRestoranId() {
         return restoranId;
@@ -27,5 +28,13 @@ public class StoDto {
 
     public void setZona(String zona) {
         this.zona = zona;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

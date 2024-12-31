@@ -10,6 +10,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class DostupnostMapper {
     private StoRepository stoRepository;
+
+    public DostupnostMapper(StoRepository stoRepository){
+        this.stoRepository = stoRepository;
+    }
+
     public static DostupnostDto dostupnostToDostupnostDto(DostupnostStolova dostupnost) {
         DostupnostDto dostupnostDto = new DostupnostDto();
         dostupnostDto.setStoId(dostupnost.getSto().getId());

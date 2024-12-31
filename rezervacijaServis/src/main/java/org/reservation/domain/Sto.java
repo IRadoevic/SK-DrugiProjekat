@@ -11,7 +11,7 @@ public class Sto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restoran_id", referencedColumnName = "id", nullable = false)
     private Restoran restoran;
 

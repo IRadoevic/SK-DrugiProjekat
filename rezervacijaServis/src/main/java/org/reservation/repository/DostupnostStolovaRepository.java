@@ -63,7 +63,7 @@ public interface DostupnostStolovaRepository extends JpaRepository<DostupnostSto
     //@Query("SELECT d FROM DostupnostStolova d WHERE d.id = :id")
     Optional<DostupnostStolova> findById(@Param("id") Long id);
 
-    @Query("SELECT d FROM DostupnostStolova d WHERE d.tipKuhinje = :tipKuhinje AND d.lokacija = :lokacija AND d.brojOsoba = :brojOsoba AND d.datumVreme = :datumVreme")
+    @Query("SELECT d FROM DostupnostStolova d JOIN d.sto s WHERE d.tipKuhinje = :tipKuhinje AND d.lokacija = :lokacija AND s.brojMesta = :brojOsoba AND d.datumVreme = :datumVreme")
     List<DostupnostStolova> findAvailableTerminiByFilters(
             @Param("tipKuhinje") String tipKuhinje,
             @Param("lokacija") String lokacija,

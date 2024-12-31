@@ -16,19 +16,11 @@ public class DostupnostStolova {
     private Sto sto;
 
     private LocalDateTime datumVreme;
-    private int brojOsoba;
+    //ovo zameniit sa vrednosti brojMesta iz sto
     private boolean dostupnostStolova;
     private String lokacija;
     private String tipKuhinje;
-
-    public int getBrojOsoba() {
-        return brojOsoba;
-    }
-
-    public void setBrojOsoba(int brojOsoba) {
-        this.brojOsoba = brojOsoba;
-    }
-
+    private Long userId;
 
     public LocalDateTime getDatumVreme() {
         return datumVreme;
@@ -38,13 +30,6 @@ public class DostupnostStolova {
         this.datumVreme = datumVreme;
     }
 
-    public int getBrojOSoba() {
-        return brojOsoba;
-    }
-
-    public void setBrojOSoba(int brojOSoba) {
-        this.brojOsoba = brojOSoba;
-    }
 
     public boolean isDostupnostStolova() {
         return dostupnostStolova;
@@ -70,9 +55,6 @@ public class DostupnostStolova {
         this.tipKuhinje = tipKuhinje;
     }
 
-    private boolean available = true;
-    private Long userId;
-
     public Long getId() {
         return id;
     }
@@ -87,15 +69,6 @@ public class DostupnostStolova {
 
     public void setSto(Sto sto) {
         this.sto = sto;
-    }
-
-
-    public boolean isAvailable() {
-        return available;
-    }
-
-    public void setAvailable(boolean available) {
-        this.available = available;
     }
 
     public Long getUserId() {
