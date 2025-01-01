@@ -71,7 +71,7 @@ public interface DostupnostStolovaRepository extends JpaRepository<DostupnostSto
             @Param("datumVreme") LocalDateTime datumVreme
     );
 
-    @Query("SELECT d FROM DostupnostStolova d WHERE d.id = :id AND d.datumVreme = :datumVreme")
+    @Query("SELECT d FROM DostupnostStolova d WHERE d.id = :id AND d.datumVreme = :datumVreme AND d.dostupnostStolova =true")
     Optional<DostupnostStolova> findAvailableByTableAndDate(
             @Param("id") Long id,
             @Param("datumVreme") LocalDateTime datumVreme

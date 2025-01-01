@@ -16,7 +16,6 @@ public class DostupnostStolova {
     private Sto sto;
 
     private LocalDateTime datumVreme;
-    //ovo zameniit sa vrednosti brojMesta iz sto
     private boolean dostupnostStolova;
     private String lokacija;
     private String tipKuhinje;

@@ -2,10 +2,13 @@ package org.reservation.dto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.List;
 
 
-public class PorukaDto {
+public class PorukaDto implements Serializable {
+    private static final long serialVersionUID = 1L; //ovo vljd mora ako je serializable
+
     @NotBlank
     private String tipNotifikacije;
     private List<String> parametri;

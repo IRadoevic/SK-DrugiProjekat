@@ -72,6 +72,7 @@ public class DostupnostStolovaController {
     public ResponseEntity<DostupnostStolova> updateDostupnost(@RequestHeader("Authorization") String authorization,
                                                               @PathVariable Long id,
                                                               @RequestBody @Valid UpateDostupnostDto updateDostupnostDto) {
+        //ovaj id koji uzima je id iz tabele dostupnosti, mozda ce posle za impl trebati da bude id stola
         String token = authorization.split(" ")[1];
         Integer userId = tokenService.getUserIdFromToken(token);
 
@@ -91,7 +92,7 @@ public class DostupnostStolovaController {
     }
     @CheckSecurity(roles = {"USER"})
     @GetMapping("/filter")
-    public ResponseEntity<List<DostupnostStolova>> filterTermine(@RequestBody FilterDostupnostiDto filterDto) {
+    public ResponseEntity<List<DostupnostStolova>> filterTermine(@RequestHeader("Authorization") String authorization,@RequestBody FilterDostupnostiDto filterDto) {
         List<DostupnostStolova> termini = dostupnostStolovaService.findAvailableTerminiByFilters(filterDto);
         return new ResponseEntity<>(termini, HttpStatus.OK);
     }
@@ -105,7 +106,7 @@ public class DostupnostStolovaController {
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
-            return new ResponseEntity<>("Došlo je do greške pri rezervaciji.", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Došlo je do greške pri rezervaciji." + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

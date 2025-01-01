@@ -17,7 +17,7 @@ public class DostupnostMapper {
 
     public static DostupnostDto dostupnostToDostupnostDto(DostupnostStolova dostupnost) {
         DostupnostDto dostupnostDto = new DostupnostDto();
-        dostupnostDto.setStoId(dostupnost.getSto().getId());
+        dostupnostDto.setSto(dostupnost.getSto());
         dostupnostDto.setDateTime(dostupnost.getDatumVreme());
         dostupnostDto.setAvailable(dostupnost.isDostupnostStolova());
         return dostupnostDto;
@@ -25,8 +25,8 @@ public class DostupnostMapper {
 
     public DostupnostStolova dostupnostDtoToDostupnost(DostupnostDto dostupnostDto) {
         DostupnostStolova dostupnost = new DostupnostStolova();
-        Sto sto = stoRepository.findById(dostupnostDto.getStoId())
-                .orElseThrow(() -> new NotFoundException("Sto sa ID-jem " + dostupnostDto.getStoId() + " nije pronađen."));
+        Sto sto = stoRepository.findById(dostupnostDto.getSto().getId())
+                .orElseThrow(() -> new NotFoundException("Sto sa ID-jem " + dostupnostDto.getSto().getId() + " nije pronađen."));
         dostupnost.setSto(sto);
         dostupnost.setDatumVreme(dostupnostDto.getDateTime());
         dostupnost.setDostupnostStolova(dostupnostDto.isAvailable());
