@@ -5,12 +5,14 @@ import lombok.Setter;*/
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.List;
 
 /*
 @Getter
 @Setter*/
-public class PorukaDto {
+public class PorukaDto implements Serializable {
+    private static final long serialVersionUID = 1L;
     @NotBlank
     private String tipNotifikacije;
 

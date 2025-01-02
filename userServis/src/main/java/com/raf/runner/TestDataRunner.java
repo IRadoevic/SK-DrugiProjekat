@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Profile({"default"})
 @Component
@@ -30,6 +31,8 @@ public class TestDataRunner implements CommandLineRunner {
         admin.setDatumRodjenja(LocalDate.now());
         admin.setFirstName("a");
         admin.setLastName("aa");
-        userRepository.save(admin);
+        /*Optional<User> user = userRepository.findByUsername("admin");
+        if(user.isEmpty())
+            userRepository.save(admin);*/
     }
 }

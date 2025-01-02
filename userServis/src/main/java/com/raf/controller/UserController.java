@@ -123,6 +123,7 @@ public class UserController {
         UserBrRezervacijaDto userBrRezervacijaDto = userService.getUserReservationCount(userId);
         return new ResponseEntity<>(userBrRezervacijaDto, HttpStatus.OK);
     }
+
     @ApiOperation(value = "Get user by ID")
     @GetMapping("getUser/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
@@ -132,5 +133,13 @@ public class UserController {
         } catch (NotFoundException e) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @ApiOperation(value = "Confirm registration")
+    @GetMapping("/verify")
+    public String verify(@RequestParam String token) {
+        System.out.println("Verification token received: " + token);
+        userService.verifyAcc(token);
+        return token;
     }
 }

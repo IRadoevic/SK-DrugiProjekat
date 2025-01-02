@@ -15,6 +15,5 @@ public interface UserService {
     void decrementReservationCount(DecrementReservationCountDto decrementReservationCountDto );
     UserBrRezervacijaDto getUserReservationCount(Long userId);
     UserDto vratiUsera(Long id);
-
-    //Page<UserDto> findAll(Pageable );
+    boolean verifyAcc(String username);
 }

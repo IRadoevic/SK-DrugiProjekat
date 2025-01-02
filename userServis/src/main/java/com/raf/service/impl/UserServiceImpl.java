@@ -1,10 +1,12 @@
 package com.raf.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.raf.MessageBroker;
 import com.raf.domain.User;
 import com.raf.dto.*;
 import com.raf.exeption.NotFoundException;
 import com.raf.exeption.UserBannedException;
+import com.raf.listener.MessageHelper;
 import com.raf.mapper.UserMapper;
 import com.raf.repository.UserRepository;
 import com.raf.security.service.TokenService;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,17 +29,23 @@ public class UserServiceImpl implements UserService {
     private TokenService tokenService;
     private UserRepository userRepository;
     private UserMapper userMapper;
-    //private JmsTemplate jmsTemplate; // Dodaj JmsTemplate za slanje poruka
+    private JmsTemplate jmsTemplate;
+    private MessageHelper messageHelper;
 
 
-    public UserServiceImpl(TokenService tokenService, UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(TokenService tokenService, UserRepository userRepository, UserMapper userMapper, JmsTemplate jmsTemplate, MessageHelper messageHelper) {
         this.tokenService = tokenService;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.jmsTemplate = jmsTemplate;
+        this.messageHelper = messageHelper;
     }
 
     @Override
     public UserDto addUser(UserCreateDto userCreateDto) {
+        Optional<User> ex = userRepository.findByUsername(userCreateDto.getUsername());
+        if(ex.isPresent())
+            throw new RuntimeException("Username already taken");
         User user = userMapper.userCreateDtoToUser(userCreateDto);
         userRepository.save(user);
         // salji mejl
@@ -46,13 +55,16 @@ public class UserServiceImpl implements UserService {
         porukaDto.setTipNotifikacije("Slanje aktivacionog imejla");
         // postovani %username aktiviali ste nalog
         porukaDto.setParametri(List.of(user.getUsername()));
-        //jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+        jmsTemplate.convertAndSend("send_emails_queue", messageHelper.createTextMessage(porukaDto));
 
         return userMapper.userToUserDto(user);
     }
 
     @Override
     public UserDto addManager(ManagerCreateDto managerCreateDto) {
+        Optional<User> ex = userRepository.findByUsername(managerCreateDto.getUsername());
+        if(ex.isPresent())
+            throw new RuntimeException("Username already taken");
         User user = userMapper.managerCreateDtoToUser(managerCreateDto);
         userRepository.save(user);
         // salji mejl
@@ -61,7 +73,7 @@ public class UserServiceImpl implements UserService {
         porukaDto.setTipNotifikacije("Slanje aktivacionog imejla");
         // postovani %username aktiviali ste nalog
         porukaDto.setParametri(List.of(user.getUsername()));
-        //jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+        jmsTemplate.convertAndSend("send_emails_queue", messageHelper.createTextMessage(porukaDto));
         return userMapper.userToUserDto(user);
     }
     @Transactional
@@ -100,11 +112,9 @@ public class UserServiceImpl implements UserService {
     }
     @Transactional
     public boolean updateUser(Long id, UserUpdateDto userUpdateDto) {
-        System.out.println("uopste usao u fju");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         boolean updated = false;
-        System.out.println("dosao do ovde");
         // Azuriraj samo polja koja nisu null
         if (userUpdateDto.getEmail() != null) {
             user.setEmail(userUpdateDto.getEmail());
@@ -171,6 +181,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto vratiUsera(Long id) {
         return userMapper.userToUserDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
+    }
+
+    @Override
+    public boolean verifyAcc(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
+        user.setVerified(true);
+        userRepository.save(user);
+        return true;
     }
 
     /*@Override

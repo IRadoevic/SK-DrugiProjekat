@@ -34,6 +34,15 @@ public class User {
     private Integer brojRezervacija = 0;
     private  String role;
     private  String nazivRestorana;
+    private Boolean verified = false;
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
+    }
 
     public void setId(Long id) {
         this.id = id;
