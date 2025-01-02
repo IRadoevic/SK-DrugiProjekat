@@ -26,7 +26,7 @@ public class SecurityAspect {
         this.tokenService = tokenService;
     }
 
-    @Around("@annotation(com.raf.security.CheckSecurity)")
+    @Around("@annotation(org.rag.security.CheckSecurity)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         //Get method signature
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -42,7 +42,7 @@ public class SecurityAspect {
                 }
             }
         }
-        //If token is not presents return UNAUTHORIZED response
+        System.out.println(token);
         if (token == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

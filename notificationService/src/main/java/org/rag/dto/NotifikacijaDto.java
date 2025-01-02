@@ -14,4 +14,5 @@ public class NotifikacijaDto {
     private String email;
     private String tekst;
     private LocalDateTime vremeSlanja;
+    private String username;
 }

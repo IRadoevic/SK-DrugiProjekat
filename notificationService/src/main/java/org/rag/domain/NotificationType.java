@@ -1,12 +1,9 @@
 package org.rag.domain;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.*;
+import java.util.List;
 
-@Getter
-@Setter
+
 @Entity
 public class NotificationType {
     @Id
@@ -15,6 +12,38 @@ public class NotificationType {
     private String tip;
     // !!!!!!! poruka gde treba parametri da se ubace ima %, npr Pozdrav %, bla bla
     private String tekst;
+    //private List<String> args;
+    private int brArgumenata;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTip() {
+        return tip;
+    }
+
+    public void setTip(String tip) {
+        this.tip = tip;
+    }
+
+    public String getTekst() {
+        return tekst;
+    }
+
+    public void setTekst(String tekst) {
+        this.tekst = tekst;
+    }
+
+    public int getBrArgumenata() {
+        return brArgumenata;
+    }
+
+    public void setBrArgumenata(int brArgumenata) {
+        this.brArgumenata = brArgumenata;
+    }
 }

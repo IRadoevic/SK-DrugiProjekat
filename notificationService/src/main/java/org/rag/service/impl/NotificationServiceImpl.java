@@ -17,12 +17,20 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class NotificationServiceImpl implements NotificationService {
     NotificationTypeRepository notificationTypeRepository;
     NotifikacijaMapper notifikacijaMapper;
     NotificationRepository notificationRepository;
+
+    public NotificationServiceImpl(NotificationTypeRepository notificationTypeRepository,
+                                   NotificationRepository notificationRepository, NotifikacijaMapper notifikacijaMapper){
+        this.notificationTypeRepository = notificationTypeRepository;
+        this.notificationRepository = notificationRepository;
+        this.notifikacijaMapper = notifikacijaMapper;
+    }
 
     @Autowired
     public JavaMailSender mailSender;
@@ -40,8 +48,6 @@ public class NotificationServiceImpl implements NotificationService {
     public void obradiPoruku(PorukaDto porukaDto) {
         NotifikacijaDto notifikacijaDto = new NotifikacijaDto();
         notifikacijaDto.setVremeSlanja(LocalDateTime.now());
-
-
         if(porukaDto.getTipNotifikacije().equals("Slanje aktivacionog imejla"))
         {
             NotificationType notificationType = notificationTypeRepository.findByTip(porukaDto.getTipNotifikacije()).orElseThrow(() -> new NotFoundException("Notifikacija not found"));
@@ -53,8 +59,11 @@ public class NotificationServiceImpl implements NotificationService {
             notifikacijaDto.setTekst(emailTekst);
             dodajNotifikaciju(notifikacijaDto);
             // poziva da se posalje
-            sendEmail(porukaDto.getEmail(), "Aktiviranje naloga",emailTekst);
 
+            String verificationLink = "http://localhost:8080/api/user/verify?token=" + porukaDto.getParametri().get(0);
+            emailTekst = "Click the following link to verify your email: " + verificationLink;
+            sendEmail(porukaDto.getEmail(), "Aktiviranje naloga",
+                    emailTekst);
         }
         else if(porukaDto.getTipNotifikacije().equals("Slanje imejla za promenu lozinke")){
 
@@ -113,21 +122,29 @@ public class NotificationServiceImpl implements NotificationService {
             sendEmail(porukaDto.getEmail(), "Ostvarena pogodnost",emailTekst);
 
         }
+        System.out.println("uspeo do kraja");
     }
 
     @Override
     public void dodajNotifikaciju(NotifikacijaDto notifikacijaDto) {
-      notificationRepository.save( notifikacijaMapper.dtoToNotification(notifikacijaDto));
+        System.out.println();
+        notificationRepository.save( notifikacijaMapper.dtoToNotification(notifikacijaDto));
     }
 
     @Override
     public List<Notification> sveEmailove(FilterNotificationDto filterNotificationDto) {
+        //return null;
         return notificationRepository.findAllEmailByFilter(filterNotificationDto.getTip(), filterNotificationDto.getStartDate(), filterNotificationDto.getEndDate());
     }
 
     @Override
     public List<Notification> userEmailove(Long id, FilterNotificationDto filterNotificationDto) {
-        return notificationRepository.findUserEmailByFilter(filterNotificationDto.getTip(), filterNotificationDto.getEmail(), filterNotificationDto.getStartDate(), filterNotificationDto.getEndDate());
+        String tip = filterNotificationDto.getTip();
+        if (tip == null) {
+            tip = "";
+        }
+        //return null;
+        return notificationRepository.findUserEmailByFilter(tip, filterNotificationDto.getEmail(), filterNotificationDto.getStartDate(), filterNotificationDto.getEndDate());
     }
 
     private static String generateMessage(String template, List<String> values) {

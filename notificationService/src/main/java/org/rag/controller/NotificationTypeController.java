@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/notificationTypes")
+@RequestMapping("/notificationTypes")
 public class NotificationTypeController {
 
     private final NotificationTypeService notificationTypeService;
@@ -16,23 +16,26 @@ public class NotificationTypeController {
         this.notificationTypeService = notificationTypeService;
     }
 
-    @CheckSecurity(roles = {"admin"})
-    @PostMapping
-    public ResponseEntity<Void> addNotificationType(@RequestBody NotificationTypeDto notificationTypeDto) {
+    @CheckSecurity(roles = {"ADMIN"})
+    @PostMapping("/add")
+    public ResponseEntity<Void> addNotificationType(@RequestBody NotificationTypeDto notificationTypeDto,
+                                                    @RequestHeader("Authorization") String authorization) {
         notificationTypeService.add(notificationTypeDto);
         return ResponseEntity.ok().build();
     }
 
-    @CheckSecurity(roles = {"admin"})
+    @CheckSecurity(roles = {"ADMIN"})
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNotificationType(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteNotificationType(@PathVariable Long id,
+                                                       @RequestHeader("Authorization") String authorization) {
         notificationTypeService.delete(id);
         return ResponseEntity.ok().build();
     }
 
-    @CheckSecurity(roles = {"admin"})
+    @CheckSecurity(roles = {"ADMIN"})
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateNotificationType(@RequestBody NotificationTypeDto notificationTypeDto, @PathVariable Long id) {
+    public ResponseEntity<Void> updateNotificationType(@RequestHeader("Authorization") String authorization,
+                                                       @RequestBody NotificationTypeDto notificationTypeDto, @PathVariable Long id) {
         notificationTypeService.azuriraj(notificationTypeDto, id);
         return ResponseEntity.ok().build();
     }

@@ -20,15 +20,17 @@ public class NotificationController {
     }
 
 
-    @CheckSecurity(roles = {"admin"})
+    @CheckSecurity(roles = {"ADMIN"})
     @PostMapping("/filter/all")
-    public List<Notification> getAllEmails(@RequestBody FilterNotificationDto filterNotificationDto) {
+    public List<Notification> getAllEmails(@RequestBody FilterNotificationDto filterNotificationDto,
+                                           @RequestHeader("Authorization") String authorization) {
         return notificationService.sveEmailove(filterNotificationDto);
     }
 
-    @CheckSecurity(roles = {"menadzr", "korisnik"})
+    @CheckSecurity(roles = {"MANAGER", "USER"})
     @PostMapping("/filter/user/{id}")
-    public List<Notification> getUserEmails(@PathVariable Long id, @RequestBody FilterNotificationDto filterNotificationDto) {
+    public List<Notification> getUserEmails(@RequestHeader("Authorization") String authorization,
+            @PathVariable Long id, @RequestBody FilterNotificationDto filterNotificationDto) {
         return notificationService.userEmailove(id, filterNotificationDto);
     }
 }
