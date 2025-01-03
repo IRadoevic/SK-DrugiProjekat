@@ -34,6 +34,11 @@ public class UserController {
                     value = "Sorting criteria in the format: property(,asc|desc). " +
                             "Default sort order is ascending. " +
                             "Multiple sort criteria are supported.")})
+    /*public ResponseEntity<Page<UserDto>> getAllUsers(@RequestHeader("Authorization") String authorization,
+                                                     Pageable pageable) {
+
+        return new ResponseEntity<>(userService.findAll(pageable), HttpStatus.OK);
+    }*/
 
 
     @PostMapping("/registerUser")  // Endpoint za registraciju običnog korisnika
