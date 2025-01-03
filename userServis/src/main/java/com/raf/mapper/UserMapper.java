@@ -35,7 +35,7 @@ public class UserMapper {
         user.setUsername(userCreateDto.getUsername());
         user.setPassword(userCreateDto.getPassword());
         user.setRole(userCreateDto.getRole());
-        user.setDatumRodjenja((Date) userCreateDto.getDatumRodjenja());
+        user.setDatumRodjenja(userCreateDto.getDatumRodjenja());
         user.setBrojRezervacija(0);
         user.setDatumZaposljavanja(null);
         user.setNazivRestorana(null);
@@ -50,8 +50,8 @@ public class UserMapper {
         user.setUsername(managerCreateDto.getUsername());
         user.setPassword(managerCreateDto.getPassword());
         user.setRole(managerCreateDto.getRole());
-        user.setDatumRodjenja((Date) managerCreateDto.getDatumRodjenja());
-        user.setDatumZaposljavanja((Date) managerCreateDto.getDatumZaposljavanja());
+        user.setDatumRodjenja(managerCreateDto.getDatumRodjenja());
+        user.setDatumZaposljavanja(managerCreateDto.getDatumZaposljavanja());
         user.setBrojRezervacija(null);
         user.setNazivRestorana(managerCreateDto.getNazivrestorana());
         return user;

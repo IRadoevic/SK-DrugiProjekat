@@ -1,15 +1,25 @@
 package org.reservation.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.reservation.domain.RestoranLoyalty;
 
-import javax.persistence.ManyToOne;
-@Getter
-@Setter
 public class LoyaltyStatusKorisnikaDto {
 
     private  Integer userId;
 
     private Long restoranLoyaltyid;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Long getRestoranLoyaltyid() {
+        return restoranLoyaltyid;
+    }
+
+    public void setRestoranLoyaltyid(Long restoranLoyaltyid) {
+        this.restoranLoyaltyid = restoranLoyaltyid;
+    }
 }

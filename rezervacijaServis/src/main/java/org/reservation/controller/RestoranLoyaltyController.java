@@ -1,5 +1,8 @@
 package org.reservation.controller;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.reservation.dto.RestoranLoyaltyDto;
 import org.reservation.exception.ForbiddenException;
 import org.reservation.exception.NotFoundException;
@@ -8,6 +11,8 @@ import org.reservation.service.RestoranLoyaltyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import org.reservation.security.CheckSecurity;
 
 import javax.validation.Valid;
 
@@ -23,6 +28,7 @@ public class RestoranLoyaltyController {
         this.tokenService = tokenService;
     }
 
+    @CheckSecurity(roles = {"MANAGER"})
     @PostMapping("/add")
     public ResponseEntity<String> addLoyaltyForRestoran(@RequestHeader("Authorization") String authorization,
                                                         @RequestBody @Valid RestoranLoyaltyDto restoranLoyaltyDto) {

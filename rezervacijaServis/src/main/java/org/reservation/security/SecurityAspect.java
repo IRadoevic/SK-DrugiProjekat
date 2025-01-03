@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
@@ -26,7 +27,7 @@ public class SecurityAspect {
         this.tokenService = tokenService;
     }
 
-    @Around("@annotation(com.raf.security.CheckSecurity)")
+    @Around("@annotation(org.reservation.security.CheckSecurity)")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         //Get method signature
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -42,7 +43,7 @@ public class SecurityAspect {
                 }
             }
         }
-        //If token is not presents return UNAUTHORIZED response
+        System.out.println(token);
         if (token == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

@@ -1,20 +1,27 @@
 package com.raf.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.raf.MessageBroker;
 import com.raf.domain.User;
 import com.raf.dto.*;
 import com.raf.exeption.NotFoundException;
+import com.raf.exeption.UserBannedException;
+import com.raf.listener.MessageHelper;
 import com.raf.mapper.UserMapper;
 import com.raf.repository.UserRepository;
 import com.raf.security.service.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -22,17 +29,23 @@ public class UserServiceImpl implements UserService {
     private TokenService tokenService;
     private UserRepository userRepository;
     private UserMapper userMapper;
-    private JmsTemplate jmsTemplate; // Dodaj JmsTemplate za slanje poruka
+    private JmsTemplate jmsTemplate;
+    private MessageHelper messageHelper;
 
 
-    public UserServiceImpl(TokenService tokenService, UserRepository userRepository, UserMapper userMapper) {
+    public UserServiceImpl(TokenService tokenService, UserRepository userRepository, UserMapper userMapper, JmsTemplate jmsTemplate, MessageHelper messageHelper) {
         this.tokenService = tokenService;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.jmsTemplate = jmsTemplate;
+        this.messageHelper = messageHelper;
     }
 
     @Override
     public UserDto addUser(UserCreateDto userCreateDto) {
+        Optional<User> ex = userRepository.findByUsername(userCreateDto.getUsername());
+        if(ex.isPresent())
+            throw new RuntimeException("Username already taken");
         User user = userMapper.userCreateDtoToUser(userCreateDto);
         userRepository.save(user);
         // salji mejl
@@ -42,13 +55,16 @@ public class UserServiceImpl implements UserService {
         porukaDto.setTipNotifikacije("Slanje aktivacionog imejla");
         // postovani %username aktiviali ste nalog
         porukaDto.setParametri(List.of(user.getUsername()));
-        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+        jmsTemplate.convertAndSend("send_emails_queue", messageHelper.createTextMessage(porukaDto));
 
         return userMapper.userToUserDto(user);
     }
 
     @Override
     public UserDto addManager(ManagerCreateDto managerCreateDto) {
+        Optional<User> ex = userRepository.findByUsername(managerCreateDto.getUsername());
+        if(ex.isPresent())
+            throw new RuntimeException("Username already taken");
         User user = userMapper.managerCreateDtoToUser(managerCreateDto);
         userRepository.save(user);
         // salji mejl
@@ -57,7 +73,7 @@ public class UserServiceImpl implements UserService {
         porukaDto.setTipNotifikacije("Slanje aktivacionog imejla");
         // postovani %username aktiviali ste nalog
         porukaDto.setParametri(List.of(user.getUsername()));
-        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+        jmsTemplate.convertAndSend("send_emails_queue", messageHelper.createTextMessage(porukaDto));
         return userMapper.userToUserDto(user);
     }
     @Transactional
@@ -79,15 +95,23 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException(String
                         .format("User with username: %s and password: %s not found.", tokenRequestDto.getUsername(),
                                 tokenRequestDto.getPassword())));
+        if (user.getBanned()) {
+            throw new UserBannedException("User is banned and can't login");
+        }
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());
         claims.put("role", user.getRole());
+        claims.put("username", user.getUsername());
+        claims.put("password",user.getPassword());
+        claims.put("time", LocalDate.now());
         //Generate token
-        return new TokenResponseDto(tokenService.generate(claims));
+        System.out.println("Before generating token");
+        String token = tokenService.generate(claims);
+        System.out.println("Generated Token: " + token);
+        return new TokenResponseDto(token);
     }
     @Transactional
     public boolean updateUser(Long id, UserUpdateDto userUpdateDto) {
-        // Pronadji korisnika po id
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         boolean updated = false;
@@ -117,11 +141,11 @@ public class UserServiceImpl implements UserService {
             porukaDto.setTipNotifikacije("Slanje aktivacionog imejla");
             // %username promenili ste lozinku sa %stara na % nova
             porukaDto.setParametri(List.of(user.getUsername(), stara,userUpdateDto.getPassword() ));
-            jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+            //jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
             updated = true;
         }
         if (userUpdateDto.getDatumRodjenja() != null) {
-            user.setDatumRodjenja((Date) userUpdateDto.getDatumRodjenja());
+            user.setDatumRodjenja(userUpdateDto.getDatumRodjenja());
             updated = true;
         }
         userRepository.save(user);
@@ -158,6 +182,19 @@ public class UserServiceImpl implements UserService {
     public UserDto vratiUsera(Long id) {
         return userMapper.userToUserDto(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found")));
     }
+
+    @Override
+    public boolean verifyAcc(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException("User not found"));
+        user.setVerified(true);
+        userRepository.save(user);
+        return true;
+    }
+
+    /*@Override
+    public Page<UserDto> findAll(Pageable pageable) {
+        return null;
+    }*/
 
 
 }

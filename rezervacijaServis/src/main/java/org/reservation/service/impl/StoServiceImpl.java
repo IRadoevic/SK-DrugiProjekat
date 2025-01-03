@@ -41,9 +41,11 @@ public class StoServiceImpl implements StoService {
 
     @Override
     public Sto updateSto(Long id, StoDto stoDto, Integer userId) {
+        System.out.println("part1");
         Sto sto = stoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Sto sa ID-jem " + id + " nije pronađen."));
 
+        System.out.println("part2");
         if (!sto.getRestoran().getMenagerId().equals(userId)) {
             throw new ForbiddenException("Nemate prava da menjate ovaj sto.");
         }

@@ -18,7 +18,8 @@ public class StoMapper {
 
     public static StoDto stoUStoDto(Sto sto) {
         if (sto == null) {
-            return null;
+            throw new RuntimeException("Trying to map sto that is null");
+            //return null;
         }
 
         StoDto stoDto = new StoDto();
@@ -31,7 +32,8 @@ public class StoMapper {
 
     public Sto stoDtoUSto(StoDto stoDto) {
         if (stoDto == null) {
-            return null;
+            throw new RuntimeException("Trying to map to sto, but sto is null");
+            //return null;
         }
         Sto sto = new Sto();
         Restoran restoran = restoranRepository.findById(stoDto.getRestoranId())

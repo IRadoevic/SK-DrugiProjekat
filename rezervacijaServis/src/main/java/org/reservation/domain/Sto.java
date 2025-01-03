@@ -1,12 +1,9 @@
 package org.reservation.domain;
 
-import lombok.Getter;
-import lombok.Setter;
+
 
 import javax.persistence.*;
 
-@Getter
-@Setter
 @Entity
 
 public class Sto {
@@ -14,11 +11,42 @@ public class Sto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restoran_id", referencedColumnName = "id", nullable = false)
     private Restoran restoran;
 
     private Integer brojMesta;
     private String zona;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Restoran getRestoran() {
+        return restoran;
+    }
+
+    public void setRestoran(Restoran restoran) {
+        this.restoran = restoran;
+    }
+
+    public Integer getBrojMesta() {
+        return brojMesta;
+    }
+
+    public void setBrojMesta(Integer brojMesta) {
+        this.brojMesta = brojMesta;
+    }
+
+    public String getZona() {
+        return zona;
+    }
+
+    public void setZona(String zona) {
+        this.zona = zona;
+    }
 }

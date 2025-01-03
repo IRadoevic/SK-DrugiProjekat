@@ -3,10 +3,7 @@ package org.reservation.service.impl;
 import io.github.resilience4j.bulkhead.Bulkhead;
 import io.github.resilience4j.retry.Retry;
 
-import org.reservation.repository.DostupnostStolovaRepository;
-import org.reservation.repository.RestoranLoyaltyRepository;
-import org.reservation.repository.RestoranRepository;
-import org.reservation.repository.StoRepository;
+import org.reservation.repository.*;
 import org.reservation.domain.*;
 import org.reservation.dto.*;
 import org.reservation.exception.ForbiddenException;
@@ -16,6 +13,7 @@ import org.reservation.mapper.DostupnostMapper;
 import org.reservation.service.DostupnostStolovaService;
 
 import org.reservation.service.LoyaltyStatusKorisnikaService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
@@ -24,6 +22,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Optional;
+
+
+
 
 @Service
 public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
@@ -33,44 +35,60 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
     private RestoranRepository restoranRepository;
     private RestTemplate userRestTemplate;
     private JmsTemplate jmsTemplate;
-    private String incrementReservationCountDestination;
-    private String decrementReservationCountDestination ;
+    //izbacila sam ih iz konstruktora jer sve zeznu
+    @Value("${destination.incrementReservationCount}") //ovo je definisano u app.properties
+    private String incrementReservationCount;
+
+    @Value("${destination.decrementReservationCount}")
+    private String decrementReservationCount;
     private MessageHelper messageHelper;
     private Retry userServiceRetry;
     private Bulkhead userServiceBulkhead;
     private RestoranLoyaltyRepository restoranLoyaltyRepository;
-    private LoyaltyStatusKorisnika loyaltyStatusKorisnika;
     private LoyaltyStatusKorisnikaService loyaltyStatusKorisnikaService;
 
 
-    public DostupnostStolovaServiceImpl(StoRepository stoRepository, DostupnostStolovaRepository dostupnostRepository, DostupnostMapper dostupnostMapper, RestoranRepository restoranRepository, RestTemplate userRestTemplate, JmsTemplate jmsTemplate, String incrementReservationCountDestination, String decrementReservationCountDestination, MessageHelper messageHelper, Retry userServiceRetry, Bulkhead userServiceBulkhead, RestoranLoyaltyRepository restoranLoyaltyRepository, LoyaltyStatusKorisnika loyaltyStatusKorisnika) {
+    public DostupnostStolovaServiceImpl(StoRepository stoRepository,
+                                        DostupnostStolovaRepository dostupnostRepository,
+                                        DostupnostMapper dostupnostMapper,
+                                        RestoranRepository restoranRepository,
+                                        RestTemplate userRestTemplate, JmsTemplate jmsTemplate,
+                                        MessageHelper messageHelper, Retry userServiceRetry,
+                                        Bulkhead userServiceBulkhead,
+                                        RestoranLoyaltyRepository restoranLoyaltyRepository,
+                                        LoyaltyStatusKorisnikaService loyaltyStatusKorisnikaService) {
         this.stoRepository = stoRepository;
         this.dostupnostRepository = dostupnostRepository;
         this.dostupnostMapper = dostupnostMapper;
         this.restoranRepository = restoranRepository;
         this.userRestTemplate = userRestTemplate;
         this.jmsTemplate = jmsTemplate;
-        this.incrementReservationCountDestination = incrementReservationCountDestination;
-        this.decrementReservationCountDestination = decrementReservationCountDestination;
         this.messageHelper = messageHelper;
         this.userServiceRetry = userServiceRetry;
         this.userServiceBulkhead = userServiceBulkhead;
         this.restoranLoyaltyRepository = restoranLoyaltyRepository;
-        this.loyaltyStatusKorisnika = loyaltyStatusKorisnika;
+        this.loyaltyStatusKorisnikaService = loyaltyStatusKorisnikaService;
     }
 
     @Override
     public DostupnostStolova addDostupnost(DostupnostDto dostupnostDto, Integer menadzer) {
-        Sto sto = stoRepository.findById(dostupnostDto.getStoId())
-                .orElseThrow(() -> new NotFoundException("Sto sa ID-jem " + dostupnostDto.getStoId() + " nije pronađen."));
-
+        Optional<Sto> stoOptional = stoRepository.findById(dostupnostDto.getSto().getId());
+        Sto sto = stoOptional.orElseThrow(() -> new NotFoundException("Sto sa ID-jem " + dostupnostDto.getSto().getId() + " nije pronađen."));
+        if (sto.getRestoran() == null) {
+            throw new NotFoundException("Invalid restaurant.");
+        }
         Restoran restoran = restoranRepository.findById(sto.getRestoran().getId())
                 .orElseThrow(() -> new NotFoundException("Restoran  nije pronađen."));
-
+        if (restoran.getMenagerId() == null) {
+            throw new NotFoundException("Invalid manager.");
+        }
         if (!restoran.getMenagerId().equals(menadzer)) {
             throw new ForbiddenException("Nemate prava da dodate sto u ovaj restoran.");
         }
-
+        if(dostupnostRepository.findById(sto.getId()).isPresent())
+        {
+            throw new RuntimeException("This table is already offered");
+        }
         DostupnostStolova dostupnostStolova = dostupnostMapper.dostupnostDtoToDostupnost(dostupnostDto);
         dostupnostStolova.setSto(sto);
         return dostupnostRepository.save(dostupnostStolova);
@@ -90,9 +108,9 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         }
 
         if (updateDostupnostDto.getDateTime() != null) {
-            dostupnostStolova.setDateTime(updateDostupnostDto.getDateTime());
+            dostupnostStolova.setDatumVreme(updateDostupnostDto.getDateTime());
         }
-        dostupnostStolova.setAvailable(updateDostupnostDto.isAvailable());
+        dostupnostStolova.setDostupnostStolova(updateDostupnostDto.isAvailable());
 
         return dostupnostRepository.save(dostupnostStolova);
     }
@@ -108,17 +126,16 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
     }
 
     @Override
-    public void rezervisi(RezervacijaDto rezervacijaDto) {
+    public String rezervisi(RezervacijaDto rezervacijaDto) {
         DostupnostStolova dostupnost = dostupnostRepository
                 .findAvailableByTableAndDate(rezervacijaDto.getIdStola(), rezervacijaDto.getDateTime())
                 .orElseThrow(() -> new NotFoundException("Nema dostupnosti za sto u traženo vreme."));
-        dostupnost.setAvailable(false);
+        dostupnost.setDostupnostStolova(false);
         dostupnost.setUserId(rezervacijaDto.getIdKorisnika());
+        dostupnostRepository.save(dostupnost);
         //dohvatimo br rezervacija
-       Integer brRezervacija = Bulkhead.decorateSupplier(userServiceBulkhead, ()-> Retry.decorateSupplier(userServiceRetry, ()->getBrRezervacija(rezervacijaDto.getIdKorisnika())).get()).get();
-
+        Integer brRezervacija = Bulkhead.decorateSupplier(userServiceBulkhead, ()-> Retry.decorateSupplier(userServiceRetry, ()->getBrRezervacija(rezervacijaDto.getIdKorisnika())).get()).get();
         Restoran restoran = dostupnost.getSto().getRestoran();
-
         // nalazimo sve pogodnosti koje pruza restoran
         List<RestoranLoyalty> pogodnostiRestorana = restoranLoyaltyRepository.findByRestoran(restoran);
         // prolazimo kroz listu i gledamo uslov
@@ -161,11 +178,9 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
                 }
             }
         }
-
         // posaljemo useru da se uveca br rezervacija
-        jmsTemplate.convertAndSend(incrementReservationCountDestination,
+        jmsTemplate.convertAndSend(incrementReservationCount,
                 messageHelper.createTextMessage(new IncrementReservationCountDto(rezervacijaDto.getIdKorisnika())));
-
         // obavestimo notification klijenta da je uspesno rezervisao
         PorukaDto porukaDto = new PorukaDto();
         UserDto userDto = getUserById(rezervacijaDto.getIdKorisnika());
@@ -174,7 +189,6 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         // %ime %prezime  %koji restoran
         porukaDto.setParametri(List.of(userDto.getFirstName(), userDto.getLastName(), restoran.getImeRestorana()));
         jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
-
         // saljemmo i menadzeru da je rezervisao klijent
         PorukaDto porukaDto2 = new PorukaDto();
         UserDto manager = getUserById(restoran.getMenagerId().longValue());
@@ -183,13 +197,12 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         // %ime  %koji restoran
         porukaDto2.setParametri(List.of(userDto.getFirstName(), userDto.getLastName(), restoran.getImeRestorana()));
         jmsTemplate.convertAndSend("send_emails_queue", porukaDto2);
-
+        return "uspesno rezervisano";
     }
 
     private Integer getBrRezervacija(Long id) {
         try {
-
-            String url =  "/user/getBrRezervacija/" + id;
+            String url = "http://localhost:8080/api/user/getBrRezervacija/" + id;
             ResponseEntity<UserBrRezervacijaDto> response = userRestTemplate.exchange(
                     url, HttpMethod.GET, null, UserBrRezervacijaDto.class);
             return response.getBody().getRezervacija();
@@ -200,9 +213,10 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
             throw new RuntimeException("Greška prilikom dohvatanja broja rezervacija.");
         }
     }
+
     private UserDto getUserById(Long id) {
         try {
-            String url = "/user/getUser/" + id;
+            String url = "http://localhost:8080/api/user/getUser/" + id;
             ResponseEntity<UserDto> response = userRestTemplate.exchange(
                     url, HttpMethod.GET, null, UserDto.class);
             return response.getBody();
@@ -219,10 +233,10 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         DostupnostStolova dostupnost = dostupnostRepository
                 .findReservation(rezervacijaDto.getIdStola(), rezervacijaDto.getDateTime(), rezervacijaDto.getIdKorisnika())
                 .orElseThrow(() -> new NotFoundException("Nema dostupnosti za sto u traženo vreme."));
-        dostupnost.setAvailable(true);
+        dostupnost.setDostupnostStolova(true);
         dostupnost.setUserId(null);
         // saljemo da smanji broj rezervacija
-        jmsTemplate.convertAndSend(decrementReservationCountDestination,
+        jmsTemplate.convertAndSend(decrementReservationCount,
                 messageHelper.createTextMessage(new DecrementReservationCountDto(rezervacijaDto.getIdKorisnika())));
         // obavestavamo menadzera
         Restoran restoran = dostupnost.getSto().getRestoran();
@@ -231,7 +245,7 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         porukaDto.setEmail(menadzer.getEmail());
         porukaDto.setTipNotifikacije("Slanje notifikacije za otkazivanje rezervacije");
         // rezervacija %broj stola u %Restoranu
-        porukaDto.setParametri(List.of(dostupnost.getSto().getId().toString(),restoran.getImeRestorana()));
+        porukaDto.setParametri(List.of(String.valueOf(dostupnost.getSto().getId()), restoran.getImeRestorana()));
         jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
 
     }
@@ -241,8 +255,8 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         DostupnostStolova dostupnost = dostupnostRepository
                 .findReservation(rezervacijaDto.getIdStola(), rezervacijaDto.getDateTime(), rezervacijaDto.getIdKorisnika())
                 .orElseThrow(() -> new NotFoundException("Nema dostupnosti za sto u traženo vreme."));
-       Long idUsera = dostupnost.getUserId();
-        dostupnost.setAvailable(true);
+        Long idUsera = dostupnost.getUserId();
+        dostupnost.setDostupnostStolova(true);
         dostupnost.setUserId(null);
         // saljemo mejl korisniku
         Restoran restoran = dostupnost.getSto().getRestoran();
@@ -251,7 +265,7 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         porukaDto.setEmail(user.getEmail());
         porukaDto.setTipNotifikacije("Slanje notifikacije za otkazivanje rezervacije");
         // %username je otazao rezervacija %broj stola u %Restoranu
-        porukaDto.setParametri(List.of(user.getUsername(),dostupnost.getSto().getId().toString(),restoran.getImeRestorana()));
+        porukaDto.setParametri(List.of(user.getUsername(), String.valueOf(dostupnost.getSto().getId()), restoran.getImeRestorana()));
         jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
 
     }

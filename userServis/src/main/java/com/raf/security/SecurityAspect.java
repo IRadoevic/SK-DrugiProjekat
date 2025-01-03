@@ -42,7 +42,7 @@ public class SecurityAspect {
                 }
             }
         }
-        //If token is not presents return UNAUTHORIZED response
+        System.out.println(token);
         if (token == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }

@@ -13,7 +13,7 @@ public interface DostupnostStolovaService {
     DostupnostStolova addDostupnost(DostupnostDto dostupnostDto, Integer maenadzerid);
     DostupnostStolova updateDostupnost(Long id, UpateDostupnostDto updateDostupnostDto, Integer userId);
     List<DostupnostStolova> findAvailableTerminiByFilters(FilterDostupnostiDto filterDostupnostiDto);
-    void  rezervisi(RezervacijaDto rezervacijaDto);
+    String  rezervisi(RezervacijaDto rezervacijaDto);
     void  otkazivanjeKlijent(RezervacijaDto rezervacijaDto);
     void otkazivanjeMenadzer(RezervacijaDto rezervacijaDto);
 }

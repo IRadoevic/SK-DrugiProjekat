@@ -2,7 +2,6 @@ package com.raf.controller;
 
 import com.raf.dto.*;
 import com.raf.exeption.NotFoundException;
-import com.raf.security.CheckBan;
 import com.raf.security.CheckSecurity;
 import com.raf.service.impl.UserService;
 import io.swagger.annotations.ApiImplicitParam;
@@ -19,11 +18,11 @@ import javax.validation.Valid;
 public class UserController {
 
     private UserService userService;
-    private String orderDestination;
+    //private String orderDestination;
 
-    public UserController(UserService userService, String orderDestination) {
+    public UserController(UserService userService /*String orderDestination*/) {
         this.userService = userService;
-        this.orderDestination = orderDestination;
+        //this.orderDestination = orderDestination;
     }
 
     @ApiOperation(value = "Get all users")
@@ -37,26 +36,44 @@ public class UserController {
     /*public ResponseEntity<Page<UserDto>> getAllUsers(@RequestHeader("Authorization") String authorization,
                                                      Pageable pageable) {
 
-        return new ResponseEntity<>(userService.findAll(pageable), HttpStatus.OK);
-    }*/
+        //return new ResponseEntity<>(userService.findAll(pageable), HttpStatus.OK);
+    }**/
 
 
-    @PostMapping("/registerUser")  // Endpoint za registraciju običnog korisnika
-    public ResponseEntity<UserDto> saveUser(@RequestBody @Valid UserCreateDto userCreateDto) {
-
-        return new ResponseEntity<>(userService.addUser(userCreateDto), HttpStatus.CREATED);
+    @PostMapping("/registerUser")
+    public ResponseEntity<?> saveUser(@RequestBody @Valid UserCreateDto userCreateDto) {
+        try {
+            userCreateDto.setRole("USER");
+            UserDto userDto = userService.addUser(userCreateDto);
+            return new ResponseEntity<>(userDto, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Greska: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "Register manager")
     @PostMapping("/registerManager")  // Endpoint za registraciju menadžera
-    public ResponseEntity<UserDto> saveManager(@RequestBody @Valid ManagerCreateDto managerCreateDto) {
-        return new ResponseEntity<>(userService.addManager(managerCreateDto), HttpStatus.CREATED);
+    public ResponseEntity<?> saveManager(@RequestBody @Valid ManagerCreateDto managerCreateDto) {
+        try{
+            managerCreateDto.setRole("MANAGER");
+            return new ResponseEntity<>(userService.addManager(managerCreateDto), HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>("Greska: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
+    @GetMapping
+    public ResponseEntity<String> proba() {
+        return ResponseEntity.ok("UserController is working!");
+    }
+
+
     @ApiOperation(value = "Ban user")
-    @CheckSecurity(roles = {"ROLE_ADMIN"})
+    @CheckSecurity(roles = {"ADMIN"})
     @PostMapping("/ban/{userId}")
-    public ResponseEntity<String> banUser(@PathVariable Long userId) {
+    public ResponseEntity<String> banUser(@PathVariable Long userId,
+                                          @RequestHeader("Authorization") String authorization) {
         try {
             userService.banUser(userId);
             return new ResponseEntity<>("User has been banned successfully.", HttpStatus.OK);
@@ -67,9 +84,10 @@ public class UserController {
         }
     }
     @ApiOperation(value = "Unban user")
-    @CheckSecurity(roles = {"ROLE_ADMIN"})
+    @CheckSecurity(roles = {"ADMIN"})
     @PostMapping("/unban/{userId}")
-    public ResponseEntity<String> unbanUser(@PathVariable Long userId) {
+    public ResponseEntity<String> unbanUser(@PathVariable Long userId,
+     @RequestHeader("Authorization") String authorization) {
         try {
             userService.unbanUser(userId);
             return new ResponseEntity<>("User has been unbanned successfully.", HttpStatus.OK);
@@ -77,15 +95,20 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
     }
+
     @ApiOperation(value = "Login")
-    @CheckBan
+    //@CheckBan
     @PostMapping("/login")
-    public ResponseEntity<TokenResponseDto> loginUser(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
-        return new ResponseEntity<>(userService.login(tokenRequestDto), HttpStatus.OK);
+    public ResponseEntity<?> loginUser(@RequestBody @Valid TokenRequestDto tokenRequestDto) {
+        try {
+            return new ResponseEntity<>(userService.login(tokenRequestDto), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>("Greska: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @ApiOperation(value = "Update User")
-    @CheckBan
+    //@CheckBan
     @PutMapping("/users/{id}")
     public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody @Valid UserUpdateDto userUpdateDto) {
         boolean updated = userService.updateUser(id, userUpdateDto);
@@ -100,6 +123,7 @@ public class UserController {
         UserBrRezervacijaDto userBrRezervacijaDto = userService.getUserReservationCount(userId);
         return new ResponseEntity<>(userBrRezervacijaDto, HttpStatus.OK);
     }
+
     @ApiOperation(value = "Get user by ID")
     @GetMapping("getUser/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
@@ -111,8 +135,11 @@ public class UserController {
         }
     }
 
-
-
-
-
+    @ApiOperation(value = "Confirm registration")
+    @GetMapping("/verify")
+    public String verify(@RequestParam String token) {
+        System.out.println("Verification token received: " + token);
+        userService.verifyAcc(token);
+        return token;
+    }
 }

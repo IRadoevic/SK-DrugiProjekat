@@ -34,17 +34,16 @@ public class RestoranImpl implements RestoranService {
 
     @Override
     public void editRestoran(Integer userId, RestoranDto restoranDto) {
-        if (restoranDto.getId() == null) {
-            throw new IllegalArgumentException("ID restorana ne sme biti null.");
+        //ne moze biti null
+        if (restoranDto.getId() <= 0) {
+            throw new IllegalArgumentException("ID restorana mora biti veći od 0.");
         }
-
         Restoran restoran = restoranRepository.findById(restoranDto.getId())
                 .orElseThrow(() -> new NotFoundException("Restoran sa ID-jem " + restoranDto.getId() + " nije pronađen."));
 
         if (!restoran.getMenagerId().equals(userId)) {
             throw new ForbiddenException("Nemate prava da menjate ovaj restoran.");
         }
-
         if (restoranDto.getImeRestorana() != null) {
             restoran.setImeRestorana(restoranDto.getImeRestorana());
         }
@@ -54,7 +53,6 @@ public class RestoranImpl implements RestoranService {
         if (restoranDto.getOpis() != null) {
             restoran.setOpis(restoranDto.getOpis());
         }
-
         if (restoranDto.getPocetakRadnogVremena() != null) {
             restoran.setPocetakRadnogVremena(restoranDto.getPocetakRadnogVremena());
         }
@@ -64,7 +62,6 @@ public class RestoranImpl implements RestoranService {
         if (restoranDto.getTipKuhinje() != null) {
             restoran.setTipKuhinje(restoranDto.getTipKuhinje());
         }
-
         restoranRepository.save(restoran);
     }
 }
