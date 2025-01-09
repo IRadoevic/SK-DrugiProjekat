@@ -33,15 +33,14 @@ public class RestoranImpl implements RestoranService {
     }
 
     @Override
-    public void editRestoran(Integer userId, RestoranDto restoranDto) {
+    public void editRestoran(Integer userId, RestoranDto restoranDto, boolean isAdmin) {
         //ne moze biti null
-        if (restoranDto.getId() <= 0) {
+        /*if (restoranDto.getId() <= 0) {
             throw new IllegalArgumentException("ID restorana mora biti veći od 0.");
-        }
-        Restoran restoran = restoranRepository.findById(restoranDto.getId())
-                .orElseThrow(() -> new NotFoundException("Restoran sa ID-jem " + restoranDto.getId() + " nije pronađen."));
-
-        if (!restoran.getMenagerId().equals(userId)) {
+        }*/
+        Restoran restoran = restoranRepository.findByimeRestorana(restoranDto.getImeRestorana())
+                .orElseThrow(() -> new NotFoundException("Restoran sa nazivom " + restoranDto.getImeRestorana() + " nije pronađen."));
+        if (!isAdmin && !restoran.getMenagerId().equals(userId)) {
             throw new ForbiddenException("Nemate prava da menjate ovaj restoran.");
         }
         if (restoranDto.getImeRestorana() != null) {

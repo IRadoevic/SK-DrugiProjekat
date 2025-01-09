@@ -29,20 +29,17 @@ public class StoController {
         this.tokenService = tokenService;
     }
 
-    @CheckSecurity(roles = {"MANAGER"})
+    @CheckSecurity(roles = {"MANAGER", "ADMIN"})
     @PostMapping("/addSto")
     public ResponseEntity<Sto> addSto(@RequestHeader("Authorization") String authorization,
                                       @RequestBody @Valid StoDto stoDto) {
         String token = authorization.split(" ")[1];
         Integer userId = tokenService.getUserIdFromToken(token);
-
-        //poprilicno sam sig da nam ovo ne treba ali sto da ne
-        if (userId == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
         try {
-            Sto sto = stoService.addSto(stoDto, userId);
-            return new ResponseEntity<>(sto, HttpStatus.CREATED);
+            String jwta[] = authorization.split(" ");
+            String jwt = jwta[1];
+            Sto sto = stoService.addSto(stoDto, userId, tokenService.getUserRoleFromToken(jwt).equals("ADMIN"));
+            return new ResponseEntity<>(sto, HttpStatus.OK);
         } catch (ForbiddenException e) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } catch (NotFoundException e) {
@@ -52,21 +49,21 @@ public class StoController {
         }
     }
 
-    @CheckSecurity(roles = {"MANAGER"})
+    @CheckSecurity(roles = {"MANAGER", "ADMIN"})
     @PutMapping("/updateSto/{id}")
     public ResponseEntity<Sto> updateSto(@RequestHeader("Authorization") String authorization,
                                          @PathVariable Long id,
                                          @RequestBody @Valid StoDto stoDto) {
         String token = authorization.split(" ")[1];
         Integer userId = tokenService.getUserIdFromToken(token);
-
-        if (userId == null) {
+        String role = tokenService.getUserRoleFromToken(token);
+        if (!role.equals("ADMIN") && userId == null) {
             System.out.println("Unauthorized: User ID could not be extracted from token.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
         try {
-            Sto sto = stoService.updateSto(id, stoDto, userId);
+            Sto sto = stoService.updateSto(id, stoDto, userId, role.equals("ADMIN"));
             System.out.println("Successfully updated Sto with ID: " + id);
             return new ResponseEntity<>(sto, HttpStatus.OK);
         } catch (ForbiddenException e) {

@@ -104,14 +104,72 @@ public class UserServiceImpl implements UserService {
         claims.put("username", user.getUsername());
         claims.put("password",user.getPassword());
         claims.put("time", LocalDate.now());
+        claims.put("email", user.getEmail());
         //Generate token
         System.out.println("Before generating token");
         String token = tokenService.generate(claims);
         System.out.println("Generated Token: " + token);
         return new TokenResponseDto(token);
     }
+    /*public boolean updateUser(String auth, UserUpdateDto userUpdateDto) {
+        System.out.println("uuusaooolalala");
+        System.out.println(tokenService + " evo ga token servicx");
+        String teststr = "eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwicm9sZSI6IkFETUlOIiwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiYWRtaW4iLCJ0aW1lIjp7InllYXIiOjIwMjUsIm1vbnRoIjoiSkFOVUFSWSIsIm1vbnRoVmFsdWUiOjEsImRheU9mTW9udGgiOjIsImRheU9mV2VlayI6IlRIVVJTREFZIiwiZGF5T2ZZZWFyIjoyLCJlcmEiOiJDRSIsImxlYXBZZWFyIjpmYWxzZSwiY2hyb25vbG9neSI6eyJpZCI6IklTTyIsImNhbGVuZGFyVHlwZSI6Imlzbzg2MDEifX19._CqrsXmhW3Z3oCgbZX5no-ruJs5_YLw5OUO3I3GTNzStJLqdaqkfiGkDh6MT0mabYwkd5r4KNQOCTICcYlN-ag";
+        //System.out.println("a ovaj prosledjen je " + auth);
+        Claims claims = tokenService.parseToken(teststr);
+        System.out.println(claims.get("id", Integer.class) + " e ovaj je jedini vazan");
+        Long id = Long.valueOf(claims.get("id", Integer.class));
+        System.out.println("userreepo: " + userRepository);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        System.out.println("finalni print");
+        boolean updated = false;
+        // Azuriraj samo polja koja nisu null
+        if (userUpdateDto.getEmail() != null) {
+            user.setEmail(userUpdateDto.getEmail());
+            updated = true;
+        }
+        if (userUpdateDto.getFirstName() != null) {
+            user.setFirstName(userUpdateDto.getFirstName());
+            updated = true;
+        }
+        if (userUpdateDto.getLastName() != null) {
+            user.setLastName(userUpdateDto.getLastName());
+            updated = true;
+        }
+        if (userUpdateDto.getUsername() != null) {
+            user.setUsername(userUpdateDto.getUsername());
+            updated = true;
+        }
+        if (userUpdateDto.getPassword() != null && userUpdateDto.getPassword().equals("")) {
+            String stara = user.getPassword();
+            user.setPassword(userUpdateDto.getPassword());
+            // posalji da si promenio lozinku
+            PorukaDto porukaDto = new PorukaDto();
+            porukaDto.setEmail(user.getEmail());
+            porukaDto.setTipNotifikacije("Slanje aktivacionog imejla");
+            // %username promenili ste lozinku sa %stara na % nova
+            porukaDto.setParametri(List.of(user.getUsername(), stara,userUpdateDto.getPassword() ));
+            //jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+            updated = true;
+        }
+        if (userUpdateDto.getDatumRodjenja() != null) {
+            user.setDatumRodjenja(userUpdateDto.getDatumRodjenja());
+            updated = true;
+        }
+        userRepository.save(user);
+        System.out.println(updated);
+        return  updated;
+    }*/
+
     @Transactional
-    public boolean updateUser(Long id, UserUpdateDto userUpdateDto) {
+    public boolean updateUser(String auth, UserUpdateDto userUpdateDto) {
+        /*String teststr = "eyJhbGciOiJIUzUxMiJ9.eyJpZCI6MSwicm9sZSI6IkFETUlOIiwidXNlcm5hbWUiOiJhZG1pbiIsInBhc3N3b3JkIjoiYWRtaW4iLCJ0aW1lIjp7InllYXIiOjIwMjUsIm1vbnRoIjoiSkFOVUFSWSIsIm1vbnRoVmFsdWUiOjEsImRheU9mTW9udGgiOjIsImRheU9mV2VlayI6IlRIVVJTREFZIiwiZGF5T2ZZZWFyIjoyLCJlcmEiOiJDRSIsImxlYXBZZWFyIjpmYWxzZSwiY2hyb25vbG9neSI6eyJpZCI6IklTTyIsImNhbGVuZGFyVHlwZSI6Imlzbzg2MDEifX19._CqrsXmhW3Z3oCgbZX5no-ruJs5_YLw5OUO3I3GTNzStJLqdaqkfiGkDh6MT0mabYwkd5r4KNQOCTICcYlN-ag";
+        System.out.println(auth);
+        System.out.println(teststr);*/
+        String arr[] = auth.split(" ");
+        Claims claims = tokenService.parseToken(arr[1]);
+        Long id = Long.valueOf(claims.get("id", Integer.class));
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         boolean updated = false;

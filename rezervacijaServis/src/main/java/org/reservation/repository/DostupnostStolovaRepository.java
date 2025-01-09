@@ -63,7 +63,19 @@ public interface DostupnostStolovaRepository extends JpaRepository<DostupnostSto
     //@Query("SELECT d FROM DostupnostStolova d WHERE d.id = :id")
     Optional<DostupnostStolova> findById(@Param("id") Long id);
 
-    @Query("SELECT d FROM DostupnostStolova d JOIN d.sto s WHERE d.tipKuhinje = :tipKuhinje AND d.lokacija = :lokacija AND s.brojMesta = :brojOsoba AND d.datumVreme = :datumVreme")
+    @Query("SELECT d FROM DostupnostStolova d WHERE d.userId = :id")
+    List<DostupnostStolova> findByUserId(@Param("id") Long id);
+
+    @Query("SELECT d FROM DostupnostStolova d JOIN FETCH d.sto s JOIN FETCH s.restoran r WHERE r.menagerId = :id AND d.dostupnostStolova=false")
+    List<DostupnostStolova> findByManagerId(@Param("id") int id);
+
+
+    @Query("SELECT d FROM DostupnostStolova d JOIN d.sto s JOIN s.restoran r " +
+            "WHERE (:tipKuhinje IS NULL OR d.tipKuhinje = :tipKuhinje) " +
+            "AND (:lokacija IS NULL OR d.lokacija = :lokacija) " +
+            "AND (:brojOsoba IS NULL OR s.brojMesta >= :brojOsoba) " +
+            "AND (:datumVreme IS NULL OR d.datumVreme = :datumVreme) " +
+            "AND d.dostupnostStolova = true")
     List<DostupnostStolova> findAvailableTerminiByFilters(
             @Param("tipKuhinje") String tipKuhinje,
             @Param("lokacija") String lokacija,
@@ -71,17 +83,29 @@ public interface DostupnostStolovaRepository extends JpaRepository<DostupnostSto
             @Param("datumVreme") LocalDateTime datumVreme
     );
 
-    @Query("SELECT d FROM DostupnostStolova d WHERE d.id = :id AND d.datumVreme = :datumVreme AND d.dostupnostStolova =true")
+    @Query("SELECT d FROM DostupnostStolova d " +
+            "JOIN d.sto s " +
+            "WHERE s.id = :id " +
+            "AND d.datumVreme = :datumVreme " +
+            "AND d.dostupnostStolova = true")
     Optional<DostupnostStolova> findAvailableByTableAndDate(
             @Param("id") Long id,
             @Param("datumVreme") LocalDateTime datumVreme
     );
 
-    @Query("SELECT d FROM DostupnostStolova d WHERE d.id = :id AND d.datumVreme = :datumVreme AND d.userId = :userId")
+    @Query("SELECT d FROM DostupnostStolova d JOIN d.sto s " +
+            "WHERE s.id = :id AND d.datumVreme = :datumVreme AND d.userId = :userId")
     Optional<DostupnostStolova> findReservation(
             @Param("id") Long id,
             @Param("datumVreme") LocalDateTime datumVreme,
             @Param("userId") Long userId
+    );
+
+    @Query("SELECT d FROM DostupnostStolova d JOIN d.sto s " +
+            "WHERE s.id = :id AND d.datumVreme = :datumVreme")
+    Optional<DostupnostStolova> findReservationm(
+            @Param("id") Long id,
+            @Param("datumVreme") LocalDateTime datumVreme
     );
 }
 

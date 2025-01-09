@@ -25,11 +25,11 @@ public class StoServiceImpl implements StoService {
     }
 
     @Override
-    public Sto addSto(StoDto stoDto, Integer userId) {
+    public Sto addSto(StoDto stoDto, Integer userId, boolean isAdmin) {
         Restoran restoran = restoranRepository.findById(stoDto.getRestoranId())
                 .orElseThrow(() -> new NotFoundException("Restoran sa ID-jem " + stoDto.getRestoranId() + " nije pronađen."));
 
-        if (!restoran.getMenagerId().equals(userId)) {
+        if (!isAdmin && !restoran.getMenagerId().equals(userId)) {
             throw new ForbiddenException("Nemate prava da dodate sto u ovaj restoran.");
         }
 
@@ -40,13 +40,10 @@ public class StoServiceImpl implements StoService {
     }
 
     @Override
-    public Sto updateSto(Long id, StoDto stoDto, Integer userId) {
-        System.out.println("part1");
+    public Sto updateSto(Long id, StoDto stoDto, Integer userId, boolean isAdmin) {
         Sto sto = stoRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Sto sa ID-jem " + id + " nije pronađen."));
-
-        System.out.println("part2");
-        if (!sto.getRestoran().getMenagerId().equals(userId)) {
+        if (!isAdmin && !sto.getRestoran().getMenagerId().equals(userId)) {
             throw new ForbiddenException("Nemate prava da menjate ovaj sto.");
         }
 
@@ -57,8 +54,8 @@ public class StoServiceImpl implements StoService {
             sto.setZona(stoDto.getZona());
         }
 
-        Restoran restoran = restoranRepository.findById(stoDto.getRestoranId())
-                .orElseThrow(() -> new NotFoundException("Restoran sa ID-jem " + stoDto.getRestoranId() + " nije pronađen."));
+        Restoran restoran = restoranRepository.findById(sto.getRestoran().getId())
+                .orElseThrow(() -> new NotFoundException("Restoran sa ID-jem " + sto.getRestoran().getId() + " nije pronađen."));
         sto.setRestoran(restoran);
 
         return stoRepository.save(sto);

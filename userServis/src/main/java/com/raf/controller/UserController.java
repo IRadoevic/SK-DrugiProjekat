@@ -56,6 +56,7 @@ public class UserController {
     public ResponseEntity<?> saveManager(@RequestBody @Valid ManagerCreateDto managerCreateDto) {
         try{
             managerCreateDto.setRole("MANAGER");
+            System.out.println("usao je na pravo mesto");
             return new ResponseEntity<>(userService.addManager(managerCreateDto), HttpStatus.CREATED);
         }catch (Exception e){
             return new ResponseEntity<>("Greska: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,8 +64,9 @@ public class UserController {
 
     }
 
-    @GetMapping
+    @GetMapping("/users")
     public ResponseEntity<String> proba() {
+        System.out.println("got here");
         return ResponseEntity.ok("UserController is working!");
     }
 
@@ -78,8 +80,10 @@ public class UserController {
             userService.banUser(userId);
             return new ResponseEntity<>("User has been banned successfully.", HttpStatus.OK);
         } catch (NotFoundException e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
         }
     }
@@ -103,21 +107,43 @@ public class UserController {
         try {
             return new ResponseEntity<>(userService.login(tokenRequestDto), HttpStatus.OK);
         }catch (Exception e){
+            System.out.println("Greska: " + e.getMessage());
             return new ResponseEntity<>("Greska: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @ApiOperation(value = "Update User")
     //@CheckBan
-    @PutMapping("/users/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody @Valid UserUpdateDto userUpdateDto) {
-        boolean updated = userService.updateUser(id, userUpdateDto);
+    @PutMapping("/users")
+    public ResponseEntity<String> updateUser(@RequestBody @Valid UserUpdateDto userUpdateDto,
+                                             @RequestHeader("Authorization") String authorization) {
+        System.out.println("here0000");
+        System.out.println(userService);
+        System.out.println("after user");
+        boolean updated = userService.updateUser(authorization, userUpdateDto);
         if (updated) {
             return new ResponseEntity<>("User updated successfully.", HttpStatus.OK);
         } else {
             return new ResponseEntity<>("No fields were updated.", HttpStatus.BAD_REQUEST);
         }
+        //return null;
     }
+
+    /*@ApiOperation(value = "Update User")
+    //@CheckBan
+    @PutMapping("/users")
+    public ResponseEntity<?> updateUser() {
+        System.out.println("here00007889");
+        return null;
+       /* boolean updated = userService.updateUser(authorization, userUpdateDto);
+        if (updated) {
+            return new ResponseEntity<>("User updated successfully.", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("No fields were updated.", HttpStatus.BAD_REQUEST);
+        }
+    }*/
+
+
     @GetMapping("/getBrRezervacija/{userId}")
     public ResponseEntity<UserBrRezervacijaDto> getUserReservationCount(@PathVariable Long userId) {
         UserBrRezervacijaDto userBrRezervacijaDto = userService.getUserReservationCount(userId);

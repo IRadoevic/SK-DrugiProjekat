@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divna aplikacija</title>
+    <style>
+        .form-container {
+            display: none;
+        }
+    </style>
+    <script>
+        function showForm(selectedForm) {
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.style.display = 'none';
+            });
+            const formToShow = document.getElementById(selectedForm);
+            if (formToShow) {
+                formToShow.style.display = 'block';
+            }
+        }
+
+
+        function submitForm(formId, urlcont) {
+        const form = document.getElementById(formId);
+        const inputs = form.querySelectorAll('input');
+        const data = {};
+
+        inputs.forEach(input => {
+            if (input.type !== 'button' && input.type !== 'submit') {
+                const fieldMap = {
+                    'usernameLogin': 'username',
+                    'passwordLogin': 'password',
+                    'usernameRU': 'username',
+                    'passwordRU': 'password',
+                    'firstnameRU': 'firstName',
+                    'lastnameRU': 'lastName',
+                    'emailRU': 'email',
+                    'dateRU': 'datumRodjenja',
+                    'usernameMU': 'username',
+                    'passwordMU': 'password',
+                    'firstnameMU': 'firstName',
+                    'lastnameMU': 'lastName',
+                    'emailMU': 'email',
+                    'restaurantMU': 'nazivrestorana',
+                    'dateMU': 'datumRodjenja',
+                    'dateWMU': 'datumZaposljavanja'
+                };
+
+                const key = fieldMap[input.id] || input.name;
+                data[key] = input.value;
+            }
+        });
+
+        const fullUrl = 'http://localhost:8084/users/user/' + urlcont;
+        fetch(fullUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+
+
+            if (urlcont === 'login') {
+                localStorage.setItem('jwt', data.token);
+                console.log('Token stored successfully:', data.token);
+                window.location.href = 'nextPage.html';
+            }
+            else{
+                document.getElementById(formId).style.display = 'none';
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+
+    </script>
+</head>
+<body>
+    <h1>Odaberite opciju</h1>
+    <div>
+        <label><input type="radio" name="form-selector" value="form1" onclick="showForm('form1')"> Login</label>
+        <label><input type="radio" name="form-selector" value="form2" onclick="showForm('form2')"> Registracija - korisnik</label>
+        <label><input type="radio" name="form-selector" value="form3" onclick="showForm('form3')"> Registracija - menadzer</label>
+    </div>
+
+    <div id="form1" class="form-container">
+        <h2>Logovanje</h2>
+        <form onsubmit="event.preventDefault(); submitForm('form1', 'login');">
+            <label for="usernameLogin">Username:</label>
+            <input type="text" id="usernameLogin" name="usernameLogin"><br>
+            <label for="passwordLogin">Sifra:</label>
+            <input type="password" id="passwordLogin" name="passwordLogin"><br>
+            <button type="submit">Uloguj se</button>
+        </form>
+    </div>
+
+    <div id="form2" class="form-container">
+        <h2>Registracija za korisnike</h2>
+        <form onsubmit="event.preventDefault(); submitForm('form2', 'registerUser');">
+            <label for="usernameRU">Username:</label>
+            <input type="text" id="usernameRU" name="usernameRU"><br>
+            <label for="passwordRU">Sifra:</label>
+            <input type="password" id="passwordRU" name="passwordRU"><br>
+            <label for="firstnameRU">Ime:</label>
+            <input type="text" id="firstnameRU" name="firstNameRU"><br>
+            <label for="lastnameRU">Prezime:</label>
+            <input type="text" id="lastnameRU" name="lastnameRU"><br>
+            <label for="emailRU">Imejl:</label>
+            <input type="text" id="emailRU" name="emailRU"><br>
+            <label for="dateRU">Datum rodjenja:</label>
+            <input type="datetime-local" id="dateRU" name="dateRU"><br>
+            <button type="submit">Registruj se</button>
+        </form>
+    </div>
+
+    <div id="form3" class="form-container">
+        <h2>Registracija za menadzera</h2>
+        <form onsubmit="event.preventDefault(); submitForm('form3', 'registerManager');">
+            <label for="usernameMU">Username:</label>
+            <input type="text" id="usernameMU" name="usernameMU"><br>
+            <label for="passwordMU">Sifra:</label>
+            <input type="password" id="passwordMU" name="passwordMU"><br>
+            <label for="firstnameMU">Ime:</label>
+            <input type="text" id="firstnameMU" name="firstNameMU"><br>
+            <label for="lastnameMU">Prezime:</label>
+            <input type="text" id="lastnameMU" name="lastnameMU"><br>
+            <label for="emailRU">Imejl:</label>
+            <input type="text" id="emailMU" name="emailMU"><br>
+            <label for="restaurantRU">Restoran:</label>
+            <input type="text" id="restaurantMU" name="restaurantMU"><br>
+            <label for="dateMU">Datum rodjenja:</label>
+            <input type="datetime-local" id="dateMU" name="dateMU"><br>
+            <label for="dateWMU">Datum zaposljavanja:</label>
+            <input type="datetime-local" id="dateWMU" name="dateWMU"><br>
+            <button type="submit">Registruj se</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -8,4 +8,5 @@ public interface TokenService {
 
     Claims parseToken(String jwt);
     Integer getUserIdFromToken(String jwt);
+    String getUserRoleFromToken(String jwt);
 }

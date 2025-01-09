@@ -10,10 +10,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface DostupnostStolovaService {
-    DostupnostStolova addDostupnost(DostupnostDto dostupnostDto, Integer maenadzerid);
+    DostupnostStolova addDostupnost(DostupnostDto dostupnostDto, Integer maenadzerid, boolean isAdmin);
     DostupnostStolova updateDostupnost(Long id, UpateDostupnostDto updateDostupnostDto, Integer userId);
     List<DostupnostStolova> findAvailableTerminiByFilters(FilterDostupnostiDto filterDostupnostiDto);
     String  rezervisi(RezervacijaDto rezervacijaDto);
     void  otkazivanjeKlijent(RezervacijaDto rezervacijaDto);
     void otkazivanjeMenadzer(RezervacijaDto rezervacijaDto);
+    List<DostupnostStolova> kroisnikoviTermini(long usersId);
+    List<DostupnostStolova> restoranskiTermini(long userId);
 }

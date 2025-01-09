@@ -10,7 +10,7 @@ public interface UserService {
     void banUser(Long userId);
     void unbanUser(Long userId);
     TokenResponseDto login(TokenRequestDto tokenRequestDto);
-    boolean updateUser(Long id, UserUpdateDto userUpdateDto);
+    boolean updateUser(String auth, UserUpdateDto userUpdateDto);
     void incrementReservationCount(IncrementReservationCountDto incrementReservationCountDto);
     void decrementReservationCount(DecrementReservationCountDto decrementReservationCountDto );
     UserBrRezervacijaDto getUserReservationCount(Long userId);

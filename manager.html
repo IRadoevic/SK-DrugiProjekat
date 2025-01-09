@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menadzerski servis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            gap: 50px;
+        }
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .form-container {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        input, textarea {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="buttons-container">
+            <button onclick="toggleForm('form1')">Dodaj novi restoran</button>
+            <button onclick="toggleForm('form2')">Uredi vec postojeci restoran</button>
+            <button onclick="toggleForm('form3')">Dodaj sto</button>
+            <button onclick="toggleForm('form4')">Uredi sto</button>
+            <button onclick="toggleForm('form5')">Dodaj dostupnost za sto</button>
+        </div>
+
+        <div>
+            <div id="form1" class="form-container">
+                <h2>Dodavanje novog restorana</h2>
+                <input type="text" id="imeRestorana" placeholder="Ime Restorana">
+                <input type="text" id="adresa" placeholder="Adresa">
+                <textarea id="opis" placeholder="Opis" rows="3"></textarea>
+                <input type="time" id="pocetakRadnogVremena" placeholder="Pocetak Radnog Vremena">
+                <input type="time" id="krajRadnogVremena" placeholder="Kraj Radnog Vremena">
+                <input type="text" id="tipKuhinje" placeholder="Tip Kuhinje">
+                <button onclick="submitForm1()">Dodaj</button>
+            </div>
+            <div id="form2" class="form-container">
+                <h2>Uredjivanje postojeceg restorana</h2>
+                <input type="text" id="imeRestorana2" placeholder="Ime Restorana">
+                <input type="text" id="adresa2" placeholder="Adresa">
+                <textarea id="opis2" placeholder="Opis" rows="3"></textarea>
+                <input type="time" id="pocetakRadnogVremena2" placeholder="Pocetak Radnog Vremena">
+                <input type="time" id="krajRadnogVremena2" placeholder="Kraj Radnog Vremena">
+                <input type="text" id="tipKuhinje2" placeholder="Tip Kuhinje">
+                <button onclick="submitForm2()">Izmeni</button>
+            </div>
+            <div id="form3" class="form-container">
+                <h2>Dodavanje stola</h2>
+                <input type="number" id="restoranId" placeholder="Id restorana">
+                <input type="number" id="brojMesta" placeholder="Broj mesta">
+                <input type="text" id="zona" placeholder="Opis zone">
+                <button onclick="submitForm3()">Dodaj</button>
+            </div>
+            <div id="form4" class="form-container">
+                <h2>Uredjivanje stola</h2>
+                <input type="number" id="stoId" placeholder="Id stola">
+                <input type="number" id="brojMesta2" placeholder="Broj mesta">
+                <input type="text" id="zona2" placeholder="Opis zone">
+                <button onclick="submitForm4()">Dodaj</button>
+            </div>
+            <div id="form5" class="form-container">
+                <h2>Uredi dostupnost za sto</h2>
+                <input type="text" id="idstola5" name="idstola5" placeholder="Id stola">
+                <input type="text" id="zona5" name="zona5" placeholder="Zona">
+                <input type="number" id="brojLjudi5" name="brojLjudi5" placeholder="Broj mesta">
+                <input type="datetime-local" id="termin5" name="termin5" placeholder="Termin">
+                <label>Dostupan:</label>
+                <input type="checkbox" id="dostupan5" name="dostupan5">
+                <button onclick="submitForm5()">Dodaj</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleForm(formId) {
+            const forms = document.querySelectorAll('.form-container');
+            forms.forEach(form => {
+                if (form.id === formId) {
+                    form.style.display = form.style.display === 'flex' ? 'none' : 'flex';
+                } else {
+                    form.style.display = 'none';
+                }
+            });
+        }
+
+        function submitForm1() {
+            const fieldMap = {
+                'imeRestorana': 'imeRestorana',
+                'adresa': 'adresa',
+                'opis': 'opis',
+                'pocetakRadnogVremena': 'pocetakRadnogVremena',
+                'krajRadnogVremena': 'krajRadnogVremena',
+                'tipKuhinje': 'tipKuhinje',
+                'managerId': 'managerId',
+            };
+
+            const inputs = document.querySelectorAll('#form1 input, #form1 textarea');
+            const data = {};
+
+            inputs.forEach(input => {
+                const key = fieldMap[input.id] || input.name;
+                const value = input.value.trim();
+
+                if (value) {
+                    data[key] = value;
+                }
+            });
+
+            console.log('Form 1 Data:', data);
+
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+
+            const url = `http://localhost:8084/reservations/restoran/add`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwt}`
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json;
+            })
+            .then(data => {
+                alert('SUCCESS');
+                var fc = document.getElementById("form1");
+                fc.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`An error occurred while trying to ${action} ${username}.`);
+            });
+        }
+
+        function submitForm2() {
+            const fieldMap = {
+                'imeRestorana2': 'imeRestorana',
+                'adresa2': 'adresa',
+                'opis2': 'opis',
+                'pocetakRadnogVremena2': 'pocetakRadnogVremena',
+                'krajRadnogVremena2': 'krajRadnogVremena',
+                'tipKuhinje2': 'tipKuhinje'
+            };
+
+            const inputs = document.querySelectorAll('#form2 input, #form2 textarea');
+            const data = {};
+
+            inputs.forEach(input => {
+                const key = fieldMap[input.id] || input.name;
+                const value = input.value.trim();
+
+                if (value) {
+                    data[key] = value;
+                }
+            });
+
+            console.log('Form 2 Data:', data);
+
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+
+            const url = `http://localhost:8084/reservations/restoran/editRestoran`;
+
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwt}`
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json;
+            })
+            .then(data => {
+                alert('SUCCESS');
+                var fc = document.getElementById("form2");
+                fc.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`An error occurred while trying to ${action} ${username}.`);
+            });
+        }
+
+        function submitForm3() {
+
+            const fieldMap = {
+                'restoranId': 'restoranId',
+                'brojMesta': 'brojMesta',
+                'zona': 'zona'
+            };
+
+            const inputs = document.querySelectorAll('#form3 input');
+            const data = {};
+
+            inputs.forEach(input => {
+                const key = fieldMap[input.id] || input.name;
+                const value = input.value.trim();
+
+                if (value) {
+                    data[key] = value;
+                }
+            });
+
+            console.log('Form 3 Data:', data);
+
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+
+            const url = `http://localhost:8084/reservations/sto/addSto`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwt}`
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json;
+            })
+            .then(data => {
+                alert('SUCCESS');
+                var fc = document.getElementById("form3");
+                fc.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`An error occurred while trying to ${action} ${username}.`);
+            });
+        }
+
+        function submitForm4() {
+
+        const fieldMap = {
+            'brojMesta2': 'brojMesta',
+            'zona2': 'zona'
+        };
+
+        const inputs = document.querySelectorAll('#form4 input');
+        const data = {};
+
+        inputs.forEach(input => {
+            const key = fieldMap[input.id] || input.name;
+            const value = input.value.trim();
+
+            if (value) {
+                data[key] = value;
+            }
+        });
+
+        console.log('Form 5 Data:', data);
+
+        const jwt = localStorage.getItem('jwt');
+        if (!jwt) {
+            alert('No JWT found in local storage. Please log in first.');
+            return;
+        }
+        const userField = document.getElementById('stoId');
+        const username = userField.value.trim();
+
+        const url = `http://localhost:8084/reservations/sto/updateSto/${username}`;
+
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json;
+        })
+        .then(data => {
+            alert('SUCCESS');
+            var fc = document.getElementById("form4");
+            fc.style.display = 'none';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(`An error occurred while trying to ${action} ${username}.`);
+        });
+    }
+
+
+        function submitForm5() {
+                        const fieldMap = {
+                            'idstola5': 'idstola',
+                            'zona5': 'zona',
+                            'brojLjudi5': 'brojLjudi',
+                            'termin5': 'termin',
+                            'dostupan5': 'dostupan'
+                        };
+                        const inputs = document.querySelectorAll('#form5 input');
+
+                        let transformedData = {
+                            sto: {},
+                            dateTime: '',
+                            available: false,
+                            brojOsoba: 0
+                        };
+
+                        inputs.forEach(input => {
+                            const fieldName = fieldMap[input.name];
+                            if (fieldName) {
+                                switch (fieldName) {
+                                    case 'idstola':
+                                        if (!transformedData.sto) {
+                                            transformedData.sto = {};
+                                        }
+                                        transformedData.sto.id = input.value;
+                                        break;
+                                    case 'termin':
+                                        transformedData.dateTime = input.value;
+                                        break;
+                                    case 'dostupan':
+                                        transformedData.available = input.checked;
+                                        break;
+                                    case 'brojLjudi':
+                                        transformedData.brojOsoba = parseInt(input.value, 10) || 0;
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                        });
+
+                        console.log(JSON.stringify(transformedData, null, 2));
+
+
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+
+            const url = `http://localhost:8084/reservations/dostupnostStolova/add`;
+
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwt}`
+                },
+                body: JSON.stringify(transformedData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json;
+            })
+            .then(transformedData => {
+                alert('SUCCESS');
+                var fc = document.getElementById("form5");
+                fc.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`An error occurred while trying to ${action} ${username}.`);
+            });
+        }
+
+    </script>
+</body>
+</html>

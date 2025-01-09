@@ -28,19 +28,18 @@ public class RestoranLoyaltyController {
         this.tokenService = tokenService;
     }
 
-    @CheckSecurity(roles = {"MANAGER"})
+    @CheckSecurity(roles = {"MANAGER", "ADMIN"})
     @PostMapping("/add")
     public ResponseEntity<String> addLoyaltyForRestoran(@RequestHeader("Authorization") String authorization,
                                                         @RequestBody @Valid RestoranLoyaltyDto restoranLoyaltyDto) {
         try {
             String token = authorization.split(" ")[1];
             Integer idMenadzera = tokenService.getUserIdFromToken(token);
-
-            if (idMenadzera == null) {
+            boolean isAdmin = tokenService.getUserRoleFromToken(token).equals("ADMIN");
+            if (!isAdmin && idMenadzera == null) {
                 return new ResponseEntity<>("", HttpStatus.UNAUTHORIZED);
             }
-
-            restoranLoyaltyService.dodajPogodnostiZaRestoran(restoranLoyaltyDto, idMenadzera);
+            restoranLoyaltyService.dodajPogodnostiZaRestoran(restoranLoyaltyDto, idMenadzera, isAdmin);
 
             return new ResponseEntity<>("Pogodnosti za restoran su uspesno dodate", HttpStatus.CREATED);
         } catch (ForbiddenException e) {

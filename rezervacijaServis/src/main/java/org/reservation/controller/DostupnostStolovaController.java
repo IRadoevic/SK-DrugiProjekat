@@ -15,12 +15,15 @@ import org.reservation.exception.NotFoundException;
 import org.reservation.security.CheckSecurity;
 import org.reservation.security.service.TokenService;
 import org.reservation.service.DostupnostStolovaService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -35,20 +38,19 @@ public class DostupnostStolovaController {
         this.tokenService = tokenService;
     }
 
-    @CheckSecurity(roles = {"MANAGER"})
+    @CheckSecurity(roles = {"MANAGER", "ADMIN"})
     @PostMapping("/add")
     public ResponseEntity<DostupnostStolova> addDostupnost(@RequestHeader("Authorization") String authorization,
                                                            @RequestBody @Valid DostupnostDto dostupnostDto) {
         String token = authorization.split(" ")[1];
         Integer userId = tokenService.getUserIdFromToken(token);
-
-        if (userId == null) {
+        boolean isAdmin = tokenService.getUserRoleFromToken(token).equals("ADMIN");
+        if (!isAdmin && userId == null) {
             System.out.println("Unauthorized: User ID could not be extracted from the token.");
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
         try {
-            DostupnostStolova dostupnost = dostupnostStolovaService.addDostupnost(dostupnostDto, userId);
+            DostupnostStolova dostupnost = dostupnostStolovaService.addDostupnost(dostupnostDto, userId, isAdmin);
             System.out.println("Successfully added DostupnostStolova. User ID: " + userId);
             return new ResponseEntity<>(dostupnost, HttpStatus.CREATED);
         } catch (ForbiddenException e) {
@@ -67,7 +69,7 @@ public class DostupnostStolovaController {
     }
 
 
-    @CheckSecurity(roles = {"MANAGER"})
+    @CheckSecurity(roles = {"MANAGER", "ADMIN"})
     @PutMapping("/update/{id}")
     public ResponseEntity<DostupnostStolova> updateDostupnost(@RequestHeader("Authorization") String authorization,
                                                               @PathVariable Long id,
@@ -90,19 +92,58 @@ public class DostupnostStolovaController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @CheckSecurity(roles = {"USER"})
+    @CheckSecurity(roles = {"USER", "ADMIN"})
     @GetMapping("/filter")
-    public ResponseEntity<List<DostupnostStolova>> filterTermine(@RequestHeader("Authorization") String authorization,@RequestBody FilterDostupnostiDto filterDto) {
+    public ResponseEntity<List<DostupnostStolova>> filterTermine(
+            @RequestHeader("Authorization") String authorization,
+            @RequestParam(required = false) String tipKuhinje,
+            @RequestParam(required = false) String lokacija,
+            @RequestParam(required = false) Integer brojOsoba,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDateTime datumVreme) {
+
+        // Call the service layer with the extracted parameters
+        FilterDostupnostiDto filterDto = new FilterDostupnostiDto();
+        filterDto.setTipKuhinje(tipKuhinje);
+        filterDto.setLokacija(lokacija);
+        filterDto.setBrojOsoba(brojOsoba);
+        filterDto.setDatumVreme(datumVreme);
+
+        // Pass the DTO to the service layer
         List<DostupnostStolova> termini = dostupnostStolovaService.findAvailableTerminiByFilters(filterDto);
         return new ResponseEntity<>(termini, HttpStatus.OK);
     }
 
 
+    @CheckSecurity(roles = {"USER", "ADMIN"})
+    @GetMapping("/usersReservations")
+    public ResponseEntity<List<DostupnostStolova>> uzmiKorisnikoveTermine(
+            @RequestHeader("Authorization") String authorization) {
+        String aut = authorization.split(" ")[1];
+        int id = tokenService.getUserIdFromToken(aut);
+        List<DostupnostStolova> termini = dostupnostStolovaService.kroisnikoviTermini(id);
+        return new ResponseEntity<>(termini, HttpStatus.OK);
+    }
+
+    @CheckSecurity(roles = {"MANAGER", "ADMIN"})
+    @GetMapping("/managersReservations")
+    public ResponseEntity<List<DostupnostStolova>> uzmiRestoranskeTermine(
+            @RequestHeader("Authorization") String authorization) {
+        String aut = authorization.split(" ")[1];
+        int id = tokenService.getUserIdFromToken(aut);
+        List<DostupnostStolova> termini = dostupnostStolovaService.restoranskiTermini(Long.valueOf(id));
+        return new ResponseEntity<>(termini, HttpStatus.OK);
+    }
+
+
     @PostMapping("/makeReservation")
-    public ResponseEntity<String> makeReservation(@RequestBody @Valid RezervacijaDto rezervacijaDto) {
+    public ResponseEntity<String> makeReservation(@RequestHeader("Authorization") String authorization,
+                                                  @RequestBody @Valid RezervacijaDto rezervacijaDto) {
         try {
+            String aut = authorization.split(" ")[1];
+            rezervacijaDto.setIdKorisnika(Long.valueOf(tokenService.getUserIdFromToken(aut)));
             dostupnostStolovaService.rezervisi(rezervacijaDto);
-            return new ResponseEntity<>("Rezervacija je uspešno izvršena.", HttpStatus.CREATED);
+            return new ResponseEntity<>("Rezervacija je uspešno izvršena.", HttpStatus.OK);
         } catch (NotFoundException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         } catch (Exception e) {
@@ -110,7 +151,7 @@ public class DostupnostStolovaController {
         }
     }
 
-    @CheckSecurity(roles = {"USER"})
+    @CheckSecurity(roles = {"USER", "ADMIN"})
     @PostMapping("/cancelReservation/user")
     public ResponseEntity<String> cancelReservationKlijent(@RequestHeader("Authorization") String authorization,
                                                            @RequestBody @Valid RezervacijaDto rezervacijaDto) {
@@ -120,6 +161,8 @@ public class DostupnostStolovaController {
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        rezervacijaDto.setIdKorisnika(Long.valueOf(userId));
 
         try {
             dostupnostStolovaService.otkazivanjeKlijent(rezervacijaDto);
@@ -131,7 +174,7 @@ public class DostupnostStolovaController {
         }
     }
 
-    @CheckSecurity(roles = {"MANAGER"})
+    @CheckSecurity(roles = {"MANAGER", "ADMIN"})
     @PostMapping("/cancelReservation/manager")
     public ResponseEntity<String> cancelReservationMenadzer(@RequestHeader("Authorization") String authorization,
                                                             @RequestBody @Valid RezervacijaDto rezervacijaDto) {
@@ -141,7 +184,6 @@ public class DostupnostStolovaController {
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-
         try {
             dostupnostStolovaService.otkazivanjeMenadzer(rezervacijaDto);
             return new ResponseEntity<>("Rezervacija je uspešno otkazana od strane menadžera.", HttpStatus.OK);

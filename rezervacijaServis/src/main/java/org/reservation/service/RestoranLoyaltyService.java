@@ -6,6 +6,6 @@ import org.reservation.dto.LoyaltyStatusKorisnikaDto;
 import org.reservation.dto.RestoranLoyaltyDto;
 
 public interface RestoranLoyaltyService {
-    RestoranLoyalty dodajPogodnostiZaRestoran(RestoranLoyaltyDto restoranLoyaltyDto, Integer idMenadzera);
+    RestoranLoyalty dodajPogodnostiZaRestoran(RestoranLoyaltyDto restoranLoyaltyDto, Integer idMenadzera, boolean isAdmin);
 
 }

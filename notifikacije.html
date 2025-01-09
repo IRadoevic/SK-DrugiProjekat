@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifikacije Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            margin-top: 20px;
+            width: 80%;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-container {
+            margin-bottom: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .result-item {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+            .result-item2 {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-modify,
+        .btn-delete {
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .btn-modify {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-modify:hover {
+            background-color: #218838;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Notifikacije Manager</h1>
+
+    <div class="container">
+        <h2>Dodavanje Novog Tipa Notifikacije</h2>
+        <div class="form-container">
+            <input type="text" id="tip" placeholder="Naziv tipa notifikacije">
+            <textarea id="tekst" placeholder="Opis tipa notifikacije"></textarea>
+            <button onclick="addNotificationType()">Dodaj Tip Notifikacije</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Izlistavanje Tipova Notifikacija</h2>
+        <button onclick="fetchNotificationTypes()">Prikazi Tipove Notifikacija</button>
+        <div id="results2" class="results">
+            <h3>Rezultati:</h3>
+        </div>
+    </div>
+
+    <div class="container" id="form3">
+        <h2>Izlistavanje Notifikacija (admin)</h2>
+        
+        <div class="filter-container">
+            <input type="text" id="filterTip" placeholder="Tip notifikacije (npr: Promena lozinke...)">
+            <input type="email" id="filterEmail" placeholder="Email korisnika">
+            
+            <input type="date" id="filterStartDate" placeholder="Od datuma">
+            <input type="date" id="filterEndDate" placeholder="Do datuma">
+            
+            <button onclick="fetchNotifications()">Prikazi Notifikacije</button>
+        </div>
+    
+        <div id="notificationsList" class="results">
+            <h3>Rezultati:</h3>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Izlistavanje Notifikacija (korisnik/menadzer)</h2>
+        <div class="filter-container">
+            <input type="text" id="filterTip2" placeholder="Tip notifikacije (npr: Promena lozinke...)">
+            <input type="email" id="filterEmail2" placeholder="Email korisnika">
+            
+            <input type="date" id="filterStartDate2" placeholder="Od datuma">
+            <input type="date" id="filterEndDate2" placeholder="Do datuma">
+            
+            <button onclick="fetchNotifications2()">Prikazi Notifikacije</button>
+        </div>
+    
+        <div id="notificationsList2" class="results">
+            <h3>Rezultati:</h3>
+        </div>
+    </div>
+
+    
+
+    <script>
+        function addNotificationType() {
+            
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+            const fieldMap = {
+                'tip': 'tip',
+                'tekst': 'tekst'
+            };
+
+            const inputs = document.querySelectorAll('.form-container input, .form-container textarea');
+            const data = {};
+
+            inputs.forEach(input => {
+                const key = fieldMap[input.id] || input.name;
+                const value = input.value.trim();
+
+                if (value) {
+                    data[key] = value;
+                }
+            });
+
+
+            console.log('Form Data:', data);
+
+
+            fetch('http://localhost:8084/notificationservice/notificationTypes/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwt}`
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                console.log("status: " + response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text;
+            })
+            .then(data => {
+                alert("Novi tip notifikacije uspesno dodat")
+                console.log('Success:', data);
+                
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+
+        }
+
+        function deleteType(id) {
+            
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+
+            fetch(`http://localhost:8084/notificationservice/notificationTypes/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${jwt}`
+                },
+            }).then(response => {
+                console.log("status: " + response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text;
+            })
+            .then(data => {
+                alert("Tip notifikacije uspesno obrisan")
+                console.log('Success:', data);
+                var d = document.getElementById('results2');
+                d.style.display = 'none';
+                
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+
+        }
+
+        function fetchNotificationTypes() {
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+
+            const url = `http://localhost:8084/notificationservice/notificationTypes/list`;
+
+            var d = document.getElementById('results2');
+            d.style.display = 'block';
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${jwt}`
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Data fetched successfully:", data);
+                    displayResults2(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching notification types:', error);
+                    alert('Failed to fetch notification types. Please try again later.');
+                });
+        }
+
+        function displayResults2(data) {
+            console.log("Displaying results:", data);
+            const resultsContainer = document.getElementById('results2');
+            resultsContainer.innerHTML = '<h3>Rezultati:</h3>';
+
+            if (data.length === 0) {
+                resultsContainer.innerHTML += '<p>No notification types found.</p>';
+                return;
+            }
+
+            data.forEach(item => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'result-item2';
+                resultItem.setAttribute('data-id', item.id);
+
+                resultItem.innerHTML = `
+                    <p><strong>ID:</strong> ${item.id}</p>
+                    <p><strong>Tip:</strong> ${item.tip}</p>
+                    <p><strong>Tekst:</strong> ${item.tekst}</p>
+                    <p><strong>Broj argumenata:</strong> ${item.brArgumenata}</p>
+                    <div class="button-group">
+                        <button class="btn-modify" onclick="modifyNotificationType(${item.id})">Modify</button>
+                        <button class="btn-delete" onclick="deleteType(${item.id})">Obrisi</button>
+                    </div>
+                `;
+
+
+                resultsContainer.appendChild(resultItem);
+            });
+        }
+
+        function modifyNotificationType(id) {
+            const resultItem = document.querySelector(`.result-item2[data-id="${id}"]`);
+
+            if (!resultItem) {
+                console.error("Unable to locate the item with ID:", id);
+                return;
+            }
+
+            const paragraphs = resultItem.querySelectorAll('p:not(:first-child)');
+            paragraphs.forEach(paragraph => {
+                const text = paragraph.innerText.split(':')[1]?.trim();
+                const label = paragraph.innerText.split(':')[0].trim();
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.value = text;
+                input.setAttribute('data-label', label);
+
+                paragraph.innerHTML = '';
+                paragraph.appendChild(input);
+            });
+
+            const buttonGroup = resultItem.querySelector('.button-group');
+            buttonGroup.innerHTML = `
+                <button class="btn-save" onclick="saveNotificationType(${id})">Save</button>
+                <button class="btn-cancel" onclick="cancelModify(${id})">Cancel</button>
+            `;
+        }
+
+        function cancelModify(id) {
+            fetchNotificationTypes();
+        }
+
+        function saveNotificationType(id) {
+            const resultItem = document.querySelector(`.result-item2[data-id="${id}"]`);
+
+            if (!resultItem) {
+                console.error("Unable to locate the item with ID:", id);
+                return;
+            }
+
+            const tipField = resultItem.querySelector('p:nth-of-type(2) input');
+            const tekstField = resultItem.querySelector('p:nth-of-type(3) input');
+
+            if (!tipField || !tekstField) {
+                console.error("Missing input fields for Tip or Tekst");
+                return;
+            }
+
+            const updatedData = {
+                tip: tipField.value.trim(),
+                tekst: tekstField.value.trim(),
+            };
+
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+
+            console.log("data " + updatedData);
+
+            fetch(`http://localhost:8084/notificationservice/notificationTypes/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwt}`,
+                },
+                body: JSON.stringify(updatedData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    alert("Tip notifikacije uspešno izmenjen");
+                    fetchNotificationTypes();
+                })
+                .catch(error => {
+                    console.error('Error updating notification type:', error);
+                });
+        }
+
+        function fetchNotifications() {
+            const tip = document.getElementById('filterTip').value.trim();
+            const email = document.getElementById('filterEmail').value.trim();
+            const startDate = document.getElementById('filterStartDate').value.trim();
+            const endDate = document.getElementById('filterEndDate').value.trim();
+
+            const queryParams = new URLSearchParams();
+
+            if (tip) {
+                queryParams.append('tip', tip);
+            }
+            if (email) {
+                queryParams.append('email', email);
+            }
+            if (startDate) {
+                queryParams.append('startDate', startDate);
+            }
+            if (endDate) {
+                queryParams.append('endDate', endDate);
+            }
+    
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+    
+            const url = `http://localhost:8084/notificationservice/notifications/filter/all?${queryParams}`;
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwt}`
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('SUCCESS');
+                displayResults3(data, 'notificationsList');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`An error occurred while trying to ${action} ${username}.`);
+            });
+            }
+
+            function displayResults3(data, elId) {
+                console.log("Displaying results:", data);
+                const resultsContainer = document.getElementById(elId);
+                resultsContainer.innerHTML = '<h3>Rezultati:</h3>';
+
+                if (data.length === 0) {
+                    resultsContainer.innerHTML += '<p>No notifications found.</p>';
+                    return;
+                }
+
+                data.forEach(item => {
+                    const resultItem = document.createElement('div');
+                    resultItem.className = 'result-item2';
+                    resultItem.setAttribute('data-id', item.id);
+
+                    const date = new Date(item.vremeSlanja);
+                    const formattedDate = date.toLocaleString();
+
+                    resultItem.innerHTML = `
+                        <p><strong>Email:</strong> ${item.email}</p>
+                        <p><strong>Tip:</strong> ${item.notificationType.tip}</p>
+                        <p><strong>Tekst:</strong> ${item.notificationType.tekst}</p>
+                        <p><strong>Vreme Slanja:</strong> ${formattedDate}</p>
+                    `;
+
+                    resultsContainer.appendChild(resultItem);
+                });
+            }
+
+            function fetchNotifications2() {
+            const tip = document.getElementById('filterTip2').value.trim();
+            const email = document.getElementById('filterEmail2').value.trim();
+            const startDate = document.getElementById('filterStartDate2').value.trim();
+            const endDate = document.getElementById('filterEndDate2').value.trim();
+
+            const queryParams = new URLSearchParams();
+
+            if (tip) {
+                queryParams.append('tip', tip);
+            }
+            if (email) {
+                queryParams.append('email', email);
+            }
+            if (startDate) {
+                queryParams.append('startDate', startDate);
+            }
+            if (endDate) {
+                queryParams.append('endDate', endDate);
+            }
+    
+            const jwt = localStorage.getItem('jwt');
+            if (!jwt) {
+                alert('No JWT found in local storage. Please log in first.');
+                return;
+            }
+    
+            const url = `http://localhost:8084/notificationservice/notifications/filter/user?${queryParams}`;
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${jwt}`
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('SUCCESS');
+                displayResults3(data, 'notificationsList2');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`An error occurred while trying to ${action} ${username}.`);
+            });
+            }
+
+
+    </script>
+</body>
+</html>

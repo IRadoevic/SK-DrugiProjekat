@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface NotificationTypeRepository extends JpaRepository<NotificationType, Long> {
     Optional<NotificationType> findById(Long id);
     Optional<NotificationType> findByTip(String tip);
+
+
 }

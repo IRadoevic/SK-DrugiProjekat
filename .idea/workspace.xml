@@ -1,165 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="b3da9148-d04c-4168-8d91-67185c34cb36" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/eureka/.idea/eureka.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__antlr_antlr_2_7_7.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__ch_qos_logback_logback_classic_1_2_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__ch_qos_logback_logback_core_1_2_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_fasterxml_classmate_1_5_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_annotations_2_10_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_core_2_10_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_fasterxml_jackson_core_jackson_databind_2_10_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jdk8_2_10_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_fasterxml_jackson_datatype_jackson_datatype_jsr310_2_10_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_fasterxml_jackson_module_jackson_module_parameter_names_2_10_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_google_guava_guava_20_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_h2database_h2_1_4_200.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_jayway_jsonpath_json_path_2_4_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_sun_istack_istack_commons_runtime_3_0_8.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_sun_xml_fastinfoset_FastInfoset_1_2_16.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_vaadin_external_google_android_json_0_0_20131108_vaadin1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__com_zaxxer_HikariCP_3_4_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_jsonwebtoken_jjwt_api_0_11_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_jsonwebtoken_jjwt_impl_0_11_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_jsonwebtoken_jjwt_jackson_0_11_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_springfox_springfox_core_2_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_springfox_springfox_schema_2_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_springfox_springfox_spi_2_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_springfox_springfox_spring_web_2_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_springfox_springfox_swagger2_2_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_springfox_springfox_swagger_common_2_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_springfox_springfox_swagger_ui_2_9_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_swagger_swagger_annotations_1_5_20.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__io_swagger_swagger_models_1_5_20.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__jakarta_activation_jakarta_activation_api_1_2_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__jakarta_annotation_jakarta_annotation_api_1_3_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__jakarta_jms_jakarta_jms_api_2_0_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__jakarta_persistence_jakarta_persistence_api_2_2_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__jakarta_transaction_jakarta_transaction_api_1_3_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__jakarta_validation_jakarta_validation_api_2_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__jakarta_xml_bind_jakarta_xml_bind_api_2_3_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__junit_junit_4_12.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__net_bytebuddy_byte_buddy_1_10_4.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__net_bytebuddy_byte_buddy_agent_1_10_4.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__net_minidev_accessors_smart_1_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__net_minidev_json_smart_2_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apache_activemq_activemq_broker_5_15_11.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apache_activemq_activemq_client_5_15_11.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apache_activemq_activemq_openwire_legacy_5_15_11.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apache_geronimo_specs_geronimo_j2ee_management_1_1_spec_1_0_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apache_logging_log4j_log4j_api_2_12_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apache_logging_log4j_log4j_to_slf4j_2_12_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apache_tomcat_embed_tomcat_embed_core_9_0_29.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apache_tomcat_embed_tomcat_embed_el_9_0_29.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apache_tomcat_embed_tomcat_embed_websocket_9_0_29.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_aspectj_aspectjweaver_1_9_5.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_assertj_assertj_core_3_13_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_dom4j_dom4j_2_1_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_fusesource_hawtbuf_hawtbuf_1_11.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_glassfish_jaxb_jaxb_runtime_2_3_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_glassfish_jaxb_txw2_2_3_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_hamcrest_hamcrest_2_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_hibernate_common_hibernate_commons_annotations_5_1_0_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_hibernate_hibernate_core_5_4_9_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_hibernate_validator_hibernate_validator_6_0_18_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_javassist_javassist_3_24_0_GA.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_jboss_jandex_2_1_1_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_jboss_logging_jboss_logging_3_4_1_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_5_5_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_api_5_5_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_engine_5_5_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_params_5_5_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_junit_platform_junit_platform_commons_1_5_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_junit_platform_junit_platform_engine_1_5_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_junit_vintage_junit_vintage_engine_5_5_2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_jvnet_staxex_stax_ex_1_8_1.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_mapstruct_mapstruct_1_2_0_Final.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_mockito_mockito_core_3_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_mockito_mockito_junit_jupiter_3_1_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_objenesis_objenesis_2_6.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_opentest4j_opentest4j_1_2_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_ow2_asm_asm_5_0_4.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_projectlombok_lombok_1_18_30.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_skyscreamer_jsonassert_1_5_0.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_slf4j_jul_to_slf4j_1_7_29.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_slf4j_slf4j_api_1_7_29.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_autoconfigure_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_activemq_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_aop_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_data_jpa_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_jdbc_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_json_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_logging_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_test_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_tomcat_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_validation_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_starter_web_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_test_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_boot_spring_boot_test_autoconfigure_2_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_data_spring_data_commons_2_2_3_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_data_spring_data_jpa_2_2_3_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_plugin_spring_plugin_core_1_2_0_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_plugin_spring_plugin_metadata_1_2_0_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_aop_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_aspects_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_beans_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_context_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_core_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_expression_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_jcl_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_jdbc_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_jms_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_messaging_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_orm_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_test_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_tx_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_web_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_springframework_spring_webmvc_5_2_2_RELEASE.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_xmlunit_xmlunit_core_2_6_3.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/libraries/Maven__org_yaml_snakeyaml_1_25.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/eureka/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eureka/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/eureka/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notificationService/data/mydb3.mv.db" beforeDir="false" afterPath="$PROJECT_DIR$/notificationService/data/mydb3.mv.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/data/mydb.mv.db" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/data/mydb.mv.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/controller/DostupnostStolovaController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/controller/DostupnostStolovaController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/controller/RestoranController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/controller/RestoranController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/controller/RestoranLoyaltyController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/controller/RestoranLoyaltyController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/controller/StoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/controller/StoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/dto/RestoranDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/dto/RestoranDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/repository/RestoranRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/repository/RestoranRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/security/service/TokenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/security/service/TokenService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/security/service/impl/TokenServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/security/service/impl/TokenServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/service/RestoranService.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/service/RestoranService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/service/StoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/service/StoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/service/impl/RestoranImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/service/impl/RestoranImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/service/impl/StoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/java/org/reservation/service/impl/StoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/controller/DostupnostStolovaController.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/controller/DostupnostStolovaController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/controller/RestoranController.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/controller/RestoranController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/controller/RestoranLoyaltyController.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/controller/RestoranLoyaltyController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/controller/StoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/controller/StoController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/dto/RestoranDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/dto/RestoranDto.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/repository/RestoranRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/repository/RestoranRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/security/service/TokenService.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/security/service/TokenService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/security/service/impl/TokenServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/security/service/impl/TokenServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/service/RestoranService.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/service/RestoranService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/service/StoService.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/service/StoService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/service/impl/RestoranImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/service/impl/RestoranImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/service/impl/StoServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/rezervacijaServis/target/classes/org/reservation/service/impl/StoServiceImpl.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/activemq-data/localhost/KahaDB/db-1.log" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/activemq-data/localhost/KahaDB/db-1.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/activemq-data/localhost/KahaDB/db.data" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/activemq-data/localhost/KahaDB/db.data" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/activemq-data/localhost/KahaDB/db.redo" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/activemq-data/localhost/KahaDB/db.redo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/activemq-data/localhost/KahaDB/lock" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/activemq-data/localhost/KahaDB/lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/data/mydb2.mv.db" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/data/mydb2.mv.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/data/mydb2.trace.db" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/data/mydb2.trace.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/userServis/src/main/java/com/raf/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/src/main/java/com/raf/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/UserServiceApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/UserServiceApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/configuration/SwaggerConfiguration.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/configuration/SwaggerConfiguration.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/src/main/java/com/raf/security/service/impl/TokenServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/src/main/java/com/raf/security/service/impl/TokenServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/src/main/java/com/raf/service/impl/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/src/main/java/com/raf/service/impl/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/src/main/java/com/raf/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/src/main/java/com/raf/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userServis/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/controller/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/controller/UserController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/domain/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/domain/User.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/IncrementReservationCountDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/IncrementReservationCountDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/ManagerCreateDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/ManagerCreateDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/NotificationRequestDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/NotificationRequestDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/TokenRequestDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/TokenRequestDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/TokenResponseDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/TokenResponseDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/UserCreateDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/UserCreateDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/UserDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/UserDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/UserUpdateDto.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/dto/UserUpdateDto.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/ControllerErrorHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/ControllerErrorHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/CustomException.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/CustomException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/ErrorCode.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/ErrorCode.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/ErrorDetails.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/ErrorDetails.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/NotFoundException.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/exeption/NotFoundException.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/listener/IncrementReservationCountListener.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/listener/IncrementReservationCountListener.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/mapper/UserMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/mapper/UserMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/repository/UserRepository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/BanAspect.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/BanAspect.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/CheckBan.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/CheckBan.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/CheckSecurity.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/CheckSecurity.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/SecurityAspect.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/SecurityAspect.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/service/TokenService.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/service/TokenService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/service/impl/TokenServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/security/service/impl/TokenServiceImpl.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/service/impl/UserService.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/service/impl/UserService.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/service/impl/UserServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/classes/com/raf/service/impl/UserServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/synCommunication/MessageBroker.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/classes/com/raf/synCommunication/MessageHelper.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/userServis/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/userServis/userServis.iml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -194,7 +87,8 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/irinn/Desktop/IRINA/RAF 24-25/softverske komponente/probaproba"
+    "last_opened_file_path": "C:/Users/irinn/Desktop/IRINA/RAF 24-25/softverske komponente/probaproba/eureka",
+    "settings.editor.selected.configurable": "configurable.group.tools"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -213,7 +107,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>

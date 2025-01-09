@@ -21,15 +21,14 @@ public class RestoranLoyaltySrviceImpl implements RestoranLoyaltyService {
     }
 
     @Override
-    public RestoranLoyalty dodajPogodnostiZaRestoran(RestoranLoyaltyDto restoranLoyaltyDto, Integer idMenadzera) {
+    public RestoranLoyalty dodajPogodnostiZaRestoran(RestoranLoyaltyDto restoranLoyaltyDto, Integer idMenadzera, boolean isAdmin) {
         Restoran restoran = restoranRepository.findById(restoranLoyaltyDto.getIdRestorana())
                 .orElseThrow(() -> new NotFoundException("Restoran nije pronađen."));
 
         // Proveravamo da li je korisnik menadzer ovog restorana
-        if (!restoran.getMenagerId().equals(idMenadzera)) {
-            throw new ForbiddenException("Korisnik nije menadžer ovog restorana.");
+        if (!isAdmin && !restoran.getMenagerId().equals(idMenadzera)) {
+            throw new ForbiddenException("Korisnik nije menadžer ovog restorana niti admin.");
         }
-
         RestoranLoyalty restoranLoyalty = new RestoranLoyalty();
         restoranLoyalty.setUslov(restoranLoyaltyDto.getUslov());
         restoranLoyalty.setNagrada(restoranLoyaltyDto.getNagrada());

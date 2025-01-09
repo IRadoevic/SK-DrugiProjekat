@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korisnicki servis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .action-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .form-container {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="action-container">
+        <input type="text" id="userField" placeholder="Unesite korisnikov id...">
+        <button onclick="sendPostRequest('ban')">Ban</button>
+        <button onclick="sendPostRequest('unban')">Unban</button>
+        <button onclick="toggleForm()">Uredi profil</button>
+    </div>
+
+    <div id="formContainer" class="form-container">
+        <input type="text" id="email" placeholder="email...">
+        <input type="text" id="username" placeholder="usrname...">
+        <input type="text" id="firstName" placeholder="ime...">
+        <input type="text" id="lastName" placeholder="prezime...">
+        <button onclick="submitForm()">Submit Form</button>
+    </div>
+</body>
+
+<script>
+    function sendPostRequest(action) {
+        const userField = document.getElementById('userField');
+        const username = userField.value.trim();
+
+        if (!username) {
+            alert('Please enter a username.');
+            return;
+        }
+
+        const jwt = localStorage.getItem('jwt');
+        if (!jwt) {
+            alert('No JWT found in local storage. Please log in first.');
+            return;
+        }
+
+        const url = `http://localhost:8084/users/user/${action}/${username}`;
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${jwt}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text;
+        })
+        .then(data => {
+            console.log(`${action.charAt(0).toUpperCase() + action.slice(1)} successful:`, data);
+            alert(`${action.charAt(0).toUpperCase() + action.slice(1)} successful for ${username}.`);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert(`An error occurred while trying to ${action} ${username}.`);
+        });
+    }
+    function toggleForm() {
+        const formContainer = document.getElementById('formContainer');
+        formContainer.style.display = formContainer.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function submitForm() {
+    
+    const jwt = localStorage.getItem('jwt');
+    if (!jwt) {
+        alert('No JWT found in local storage. Please log in first.');
+        return;
+    }
+    const fieldMap = {
+        'email': 'email',
+        'username': 'username',
+        'firstName': 'firstName',
+        'lastName': 'lastName',
+    };
+
+    const inputs = document.querySelectorAll('#formContainer input');
+    const data = {};
+
+    inputs.forEach(input => {
+        const key = fieldMap[input.id] || input.name;
+        const value = input.value.trim();
+
+        if (value) {
+            data[key] = value;
+        }
+    });
+
+
+    console.log('Form Data:', data);
+
+
+    fetch('http://localhost:8084/users/user/users', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${jwt}`
+        },
+        body: JSON.stringify(data)
+    }).then(response => {
+        console.log("status: " + response.status);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text;
+    })
+    .then(data => {
+        console.log('Success:', data);
+        var fc = document.getElementById("formContainer");
+        fc.style.display = 'none';
+        
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+
+}
+</script>
+
+</html>

@@ -71,7 +71,9 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
     }
 
     @Override
-    public DostupnostStolova addDostupnost(DostupnostDto dostupnostDto, Integer menadzer) {
+    public DostupnostStolova addDostupnost(DostupnostDto dostupnostDto, Integer menadzer, boolean isAdmin) {
+        System.out.println(dostupnostDto.getSto());
+        System.out.println(dostupnostDto.getSto().getId());
         Optional<Sto> stoOptional = stoRepository.findById(dostupnostDto.getSto().getId());
         Sto sto = stoOptional.orElseThrow(() -> new NotFoundException("Sto sa ID-jem " + dostupnostDto.getSto().getId() + " nije pronađen."));
         if (sto.getRestoran() == null) {
@@ -79,16 +81,13 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         }
         Restoran restoran = restoranRepository.findById(sto.getRestoran().getId())
                 .orElseThrow(() -> new NotFoundException("Restoran  nije pronađen."));
-        if (restoran.getMenagerId() == null) {
+        if (!isAdmin && restoran.getMenagerId() == null) {
             throw new NotFoundException("Invalid manager.");
         }
-        if (!restoran.getMenagerId().equals(menadzer)) {
+        if (!isAdmin && !restoran.getMenagerId().equals(menadzer)) {
             throw new ForbiddenException("Nemate prava da dodate sto u ovaj restoran.");
         }
-        if(dostupnostRepository.findById(sto.getId()).isPresent())
-        {
-            throw new RuntimeException("This table is already offered");
-        }
+
         DostupnostStolova dostupnostStolova = dostupnostMapper.dostupnostDtoToDostupnost(dostupnostDto);
         dostupnostStolova.setSto(sto);
         return dostupnostRepository.save(dostupnostStolova);
@@ -154,7 +153,8 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
                     porukaDtoPogodnost1.setTipNotifikacije("Klijent je dobio pogodnost");
                     // %ime  %koji restoran
                     porukaDtoPogodnost1.setParametri(List.of(pogodnost.getNagrada(), userDto.getUsername()));
-                    jmsTemplate.convertAndSend("send_emails_queue", porukaDtoPogodnost1);
+                    jmsTemplate.convertAndSend("send_emails_queue",
+                           messageHelper.createTextMessage(porukaDtoPogodnost1));
 
                 }
             }
@@ -172,7 +172,7 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
                     porukaDtoPogodnost2.setTipNotifikacije("Klijent je dobio pogodnost");
                     // %ime  %koji restoran
                     porukaDtoPogodnost2.setParametri(List.of(pogodnost.getNagrada(), userDto.getUsername()));
-                    jmsTemplate.convertAndSend("send_emails_queue", porukaDtoPogodnost2);
+                    jmsTemplate.convertAndSend("send_emails_queue", messageHelper.createTextMessage(porukaDtoPogodnost2));
 
 
                 }
@@ -188,7 +188,7 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         porukaDto.setTipNotifikacije("Slanje notifikacije kada je rezervacija uspešno napravljena");
         // %ime %prezime  %koji restoran
         porukaDto.setParametri(List.of(userDto.getFirstName(), userDto.getLastName(), restoran.getImeRestorana()));
-        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+        jmsTemplate.convertAndSend("send_emails_queue", messageHelper.createTextMessage(porukaDto));
         // saljemmo i menadzeru da je rezervisao klijent
         PorukaDto porukaDto2 = new PorukaDto();
         UserDto manager = getUserById(restoran.getMenagerId().longValue());
@@ -196,7 +196,7 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         porukaDto2.setTipNotifikacije("Slanje notifikacije kada je rezervacija uspešno napravljena");
         // %ime  %koji restoran
         porukaDto2.setParametri(List.of(userDto.getFirstName(), userDto.getLastName(), restoran.getImeRestorana()));
-        jmsTemplate.convertAndSend("send_emails_queue", porukaDto2);
+        jmsTemplate.convertAndSend("send_emails_queue", messageHelper.createTextMessage(porukaDto2));
         return "uspesno rezervisano";
     }
 
@@ -233,8 +233,10 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         DostupnostStolova dostupnost = dostupnostRepository
                 .findReservation(rezervacijaDto.getIdStola(), rezervacijaDto.getDateTime(), rezervacijaDto.getIdKorisnika())
                 .orElseThrow(() -> new NotFoundException("Nema dostupnosti za sto u traženo vreme."));
+        System.out.println("nasao ga je");
         dostupnost.setDostupnostStolova(true);
         dostupnost.setUserId(null);
+        dostupnostRepository.save(dostupnost);
         // saljemo da smanji broj rezervacija
         jmsTemplate.convertAndSend(decrementReservationCount,
                 messageHelper.createTextMessage(new DecrementReservationCountDto(rezervacijaDto.getIdKorisnika())));
@@ -246,18 +248,19 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         porukaDto.setTipNotifikacije("Slanje notifikacije za otkazivanje rezervacije");
         // rezervacija %broj stola u %Restoranu
         porukaDto.setParametri(List.of(String.valueOf(dostupnost.getSto().getId()), restoran.getImeRestorana()));
-        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+        jmsTemplate.convertAndSend("send_emails_queue", messageHelper.createTextMessage(porukaDto));
 
     }
 
     @Override
     public void otkazivanjeMenadzer(RezervacijaDto rezervacijaDto) {
         DostupnostStolova dostupnost = dostupnostRepository
-                .findReservation(rezervacijaDto.getIdStola(), rezervacijaDto.getDateTime(), rezervacijaDto.getIdKorisnika())
+                .findReservationm(rezervacijaDto.getIdStola(), rezervacijaDto.getDateTime())
                 .orElseThrow(() -> new NotFoundException("Nema dostupnosti za sto u traženo vreme."));
         Long idUsera = dostupnost.getUserId();
         dostupnost.setDostupnostStolova(true);
         dostupnost.setUserId(null);
+        dostupnostRepository.save(dostupnost);
         // saljemo mejl korisniku
         Restoran restoran = dostupnost.getSto().getRestoran();
         UserDto user = getUserById(idUsera);
@@ -266,7 +269,17 @@ public class DostupnostStolovaServiceImpl implements DostupnostStolovaService {
         porukaDto.setTipNotifikacije("Slanje notifikacije za otkazivanje rezervacije");
         // %username je otazao rezervacija %broj stola u %Restoranu
         porukaDto.setParametri(List.of(user.getUsername(), String.valueOf(dostupnost.getSto().getId()), restoran.getImeRestorana()));
-        jmsTemplate.convertAndSend("send_emails_queue", porukaDto);
+        jmsTemplate.convertAndSend("send_emails_queue", messageHelper.createTextMessage(porukaDto));
 
+    }
+
+    @Override
+    public List<DostupnostStolova> kroisnikoviTermini(long usersId) {
+        return dostupnostRepository.findByUserId(usersId);
+    }
+
+    @Override
+    public List<DostupnostStolova> restoranskiTermini(long userId) {
+        return dostupnostRepository.findByManagerId((int) userId);
     }
 }

@@ -8,6 +8,7 @@ public class RestoranDto {
     private String krajRadnogVremena;
     private  String tipKuhinje;
     private  Integer managerId;
+
     private long id;
 
     public long getId() {

@@ -27,24 +27,25 @@ public class RestoranController {
         this.tokenService = tokenService;
     }
 
-    @CheckSecurity(roles = {"MANAGER"})
+    @CheckSecurity(roles = {"MANAGER", "ADMIN"})
     @PostMapping("/add")
     public ResponseEntity<RestoranDto> addRestoran(@RequestHeader("Authorization") String authorization,
                                                    @RequestBody RestoranDto restoranDto) {
+        System.out.println("usao je u funkciju");
         String token = authorization.split(" ")[1];
         Integer managerId = tokenService.getUserIdFromToken(token);
         RestoranDto createdRestoran = restoranService.addRestoran(restoranDto, managerId);
-        return new ResponseEntity<>(createdRestoran, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdRestoran, HttpStatus.OK);
     }
 
-    @CheckSecurity(roles = {"MANAGER"})
+    @CheckSecurity(roles = {"MANAGER", "ADMIN"})
     @PutMapping("/editRestoran")
     public ResponseEntity<Void> editRestoran(@RequestHeader("Authorization") String authorization,
                                              @RequestBody @Valid RestoranDto restoranDto) {
         String token = authorization.split(" ")[1];
         Integer userId = tokenService.getUserIdFromToken(token);
         try {
-            restoranService.editRestoran(userId, restoranDto);
+            restoranService.editRestoran(userId, restoranDto, true);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (ForbiddenException e) {
             System.err.println("ForbiddenException occurred: " + e.getMessage());

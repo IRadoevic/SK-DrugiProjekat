@@ -1,0 +1,12 @@
+2025-01-05 14:49:01 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE *[*] FROM DOSTUPNOST_STOLOVA"; expected "identifier"; SQL statement:
+delete * FROM DOSTUPNOST_STOLOVA [42001-200]
+2025-01-05 15:11:36 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (DOSTUPNOST_STOLOVA: ""USER_ID"" BIGINT)"; SQL statement:
+INSERT INTO "PUBLIC"."DOSTUPNOST_STOLOVA"("ID","DATUM_VREME","DOSTUPNOST_STOLOVA","LOKACIJA","TIP_KUHINJE","USER_ID","TABLE_ID")VALUES(?,?,?,?,?,?,?) [22018-200]
+2025-01-05 15:11:36 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (DOSTUPNOST_STOLOVA: ""USER_ID"" BIGINT)"; SQL statement:
+INSERT INTO "PUBLIC"."DOSTUPNOST_STOLOVA"("ID","DATUM_VREME","DOSTUPNOST_STOLOVA","LOKACIJA","TIP_KUHINJE","USER_ID","TABLE_ID")VALUES(?,?,?,?,?,?,?) [22018-200]
+2025-01-09 12:59:20 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "SELECT * FROMDOSTUPNOST_STOLOVA[*]"; SQL statement:
+SELECT * FROMDOSTUPNOST_STOLOVA [42000-200]

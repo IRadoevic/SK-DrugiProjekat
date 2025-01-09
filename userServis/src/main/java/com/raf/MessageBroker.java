@@ -10,7 +10,7 @@ public class MessageBroker {
     public static void main(String[] args) {
         try {
             BrokerService broker = new BrokerService();
-            broker.addConnector("tcp://localhost:61616");
+            broker.addConnector("tcp://localhost:61617");
             System.out.println("Starting broker");
             broker.start();
             System.out.println("Broker started successfully.");

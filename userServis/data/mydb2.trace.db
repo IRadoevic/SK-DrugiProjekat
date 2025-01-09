@@ -63,3 +63,9 @@ delete FROM USER where username = "iii" [42122-200]
 2025-01-01 23:29:23 jdbc[13]: exception
 org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax error in SQL statement "DELETE FROM USER WHERE USERNAME = 'irina'USER[*]"; SQL statement:
 delete from user where username = 'irina'USER [42000-200]
+2025-01-02 19:22:24 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (USER: ""VERIFIED"" BOOLEAN)"; SQL statement:
+INSERT INTO "PUBLIC"."USER"("ID","BANNED","BROJ_REZERVACIJA","DATUM_RODJENJA","DATUM_ZAPOSLJAVANJA","EMAIL","FIRST_NAME","LAST_NAME","NAZIV_RESTORANA","PASSWORD","ROLE","USERNAME","VERIFIED")VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) [22018-200]
+2025-01-02 19:22:24 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "'' (USER: ""VERIFIED"" BOOLEAN)"; SQL statement:
+INSERT INTO "PUBLIC"."USER"("ID","BANNED","BROJ_REZERVACIJA","DATUM_RODJENJA","DATUM_ZAPOSLJAVANJA","EMAIL","FIRST_NAME","LAST_NAME","NAZIV_RESTORANA","PASSWORD","ROLE","USERNAME","VERIFIED")VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) [22018-200]

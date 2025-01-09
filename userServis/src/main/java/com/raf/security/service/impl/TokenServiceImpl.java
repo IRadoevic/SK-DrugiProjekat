@@ -34,6 +34,7 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public Claims parseToken(String jwt) {
+        System.out.println("usao u parse");
         Claims claims;
         try {
             SecretKey secretKey = getSecretKey();

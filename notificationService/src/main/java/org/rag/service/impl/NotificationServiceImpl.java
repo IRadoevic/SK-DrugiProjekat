@@ -48,10 +48,10 @@ public class NotificationServiceImpl implements NotificationService {
     public void obradiPoruku(PorukaDto porukaDto) {
         NotifikacijaDto notifikacijaDto = new NotifikacijaDto();
         notifikacijaDto.setVremeSlanja(LocalDateTime.now());
+        System.out.println("tip je: " + porukaDto.getTipNotifikacije());
         if(porukaDto.getTipNotifikacije().equals("Slanje aktivacionog imejla"))
         {
             NotificationType notificationType = notificationTypeRepository.findByTip(porukaDto.getTipNotifikacije()).orElseThrow(() -> new NotFoundException("Notifikacija not found"));
-           // neka rnd funkcija koju je gpt izgenerisao da menja % sa parametrima :))))))))
             String emailTekst = generateMessage(notificationType.getTekst(), porukaDto.getParametri());
             // doda da je poslao email
             notifikacijaDto.setEmail(porukaDto.getEmail());
@@ -77,19 +77,19 @@ public class NotificationServiceImpl implements NotificationService {
 
         }
         else if(porukaDto.getTipNotifikacije().equals("Slanje notifikacije kada je rezervacija uspešno napravljena")){
-
             NotificationType notificationType = notificationTypeRepository.findByTip(porukaDto.getTipNotifikacije()).orElseThrow(() -> new NotFoundException("Notifikacija not found"));
             String emailTekst = generateMessage(notificationType.getTekst(), porukaDto.getParametri());
             notifikacijaDto.setEmail(porukaDto.getEmail());
             notifikacijaDto.setNotificationType(notificationType);
             notifikacijaDto.setTekst(emailTekst);
             dodajNotifikaciju(notifikacijaDto);
-            sendEmail(porukaDto.getEmail(), "Uspesna rezervaija",emailTekst);
-
+            sendEmail(porukaDto.getEmail(), "Uspesna rezervacija",emailTekst);
         }
         else if(porukaDto.getTipNotifikacije().equals("Slanje notifikacije za otkazivanje rezervacije")){
+            System.out.println("usao u if");
 
             NotificationType notificationType = notificationTypeRepository.findByTip(porukaDto.getTipNotifikacije()).orElseThrow(() -> new NotFoundException("Notifikacija not found"));
+            System.out.println("prosao find");
             String emailTekst = generateMessage(notificationType.getTekst(), porukaDto.getParametri());
 
             notifikacijaDto.setEmail(porukaDto.getEmail());
@@ -122,7 +122,6 @@ public class NotificationServiceImpl implements NotificationService {
             sendEmail(porukaDto.getEmail(), "Ostvarena pogodnost",emailTekst);
 
         }
-        System.out.println("uspeo do kraja");
     }
 
     @Override
@@ -133,17 +132,15 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<Notification> sveEmailove(FilterNotificationDto filterNotificationDto) {
-        //return null;
-        return notificationRepository.findAllEmailByFilter(filterNotificationDto.getTip(), filterNotificationDto.getStartDate(), filterNotificationDto.getEndDate());
+        //return notificationRepository.findAll();
+        return notificationRepository.findAllEmailByFilter(filterNotificationDto.getTip(),
+                filterNotificationDto.getEmail(),
+                filterNotificationDto.getStartDate(), filterNotificationDto.getEndDate());
     }
 
     @Override
     public List<Notification> userEmailove(Long id, FilterNotificationDto filterNotificationDto) {
         String tip = filterNotificationDto.getTip();
-        if (tip == null) {
-            tip = "";
-        }
-        //return null;
         return notificationRepository.findUserEmailByFilter(tip, filterNotificationDto.getEmail(), filterNotificationDto.getStartDate(), filterNotificationDto.getEndDate());
     }
 
