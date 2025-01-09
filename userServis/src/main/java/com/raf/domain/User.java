@@ -19,8 +19,6 @@ import java.util.Date;
 //@Getter
 //@Setter
 @Entity
-//ja dodala
-//@EntityListeners(AuditingEntityListener.class)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
